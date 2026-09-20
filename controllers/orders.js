@@ -58,19 +58,24 @@ function update(req, res, next) {
 }
 
 // DELETE
-function destroy(req, res, next) {
-  const id = +req.params.id;
-  const index = orders.findIndex(o => o.id === id);
-  let deletedOrder = {};
 
-  if (index !== -1) {
-    deletedOrder = orders.splice(index, 1)[0];
-  }
+// no podemos eliminar solamente cambiar de estado
+// y para eso ya existe el update
 
-  res.json({
-    message: "Orden eliminada",
-    data: deletedOrder
-  });
-}
 
-module.exports = { create, list, find, update, destroy };
+// function destroy(req, res, next) {
+//   const id = +req.params.id;
+//   const index = orders.findIndex(o => o.id === id);
+//   let deletedOrder = {};
+
+//   if (index !== -1) {
+//     deletedOrder = orders.splice(index, 1)[0];
+//   }
+
+//   res.json({
+//     message: "Orden eliminada",
+//     data: deletedOrder
+//   });
+// }
+
+module.exports = { create, list, find, update};

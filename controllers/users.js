@@ -64,6 +64,8 @@ function update(req, res, next)
       message: "No se encontró el usuario"
     });
   }
+  
+  user = users[userIndex];
 
   const { name, email } = req.body;
 
@@ -81,6 +83,8 @@ function update(req, res, next)
     message: "Usuario actualizado",
     data: users[userIndex]
   });
+
+
 }
 
 // DELETE

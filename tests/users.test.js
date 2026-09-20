@@ -5,15 +5,15 @@ describe('usersController', () => {
   let res;
 
   beforeEach(() => {
+    // para borrar la lista cada inicia una prueba
     jest.resetModules();
-    usersController = require('../src/controllers/users');
+    usersController = require('../controllers/users');
 
 
     // estas estructuras nos sirven para poder simular
     // los objetos que van a representar el request y  el response
     req = { params: {}, body: {} };
     res = {status: jest.fn().mockReturnThis(),json: jest.fn() };
-
 
   });
 
@@ -27,11 +27,15 @@ describe('usersController', () => {
 
     // en  res.json.mock.calls[0][0] se encuentra el objeto recibido 
     // en la respuesta res.json(), esto gracias a jest.fn()
+
+    //dentro de .mock se encuentra un arreglo llamado calls, 
+    //su trabajo es guardar el historial completo de llamadas que ha recibido esa función durante la prueba.
+
     const response = res.json.mock.calls[0][0];
 
     expect(response.data).toMatchObject({
       name: "Sofia",
-      email: "sofia@example.com"
+      email: "sofia@gmail.com"
     });
     expect(response.data.id).toBeDefined();
   });
@@ -118,4 +122,3 @@ describe('usersController', () => {
 
 
   
-
