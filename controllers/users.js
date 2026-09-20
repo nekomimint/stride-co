@@ -26,7 +26,7 @@ function create(req, res, next)
 function list(req, res, next) 
 {
   res.json({
-    message: "Users list",
+    message: "lista de usuarios",
     data: users
   });
 }
