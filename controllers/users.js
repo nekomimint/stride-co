@@ -64,7 +64,7 @@ function update(req, res, next)
       message: "No se encontró el usuario"
     });
   }
-  
+
   user = users[userIndex];
 
   const { name, email } = req.body;
