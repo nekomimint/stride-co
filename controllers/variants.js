@@ -28,7 +28,8 @@ function create(req, res, next)
 function list(req, res, next) {
   res.json({
     message: "Lista de variantes",
-    data: variants     // solo regresamos la lista
+    // solo regresamos la lista
+    data: variants     
   });
 }
 

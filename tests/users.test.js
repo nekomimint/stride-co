@@ -1,4 +1,4 @@
-// definimos el conjutno de pruebas para usuario s
+// definimos el conjunto de pruebas para usuario s
 describe('usersController', () => {
   let usersController;
   let req;
