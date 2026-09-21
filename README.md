@@ -9,7 +9,7 @@
 | **Carrera** | Ingeniería en Computación |
 | **Materia** | Desarrollo De Aplicaciones Web |
 | **Docente** | Ramírez Martínez Luis Antonio |
-| **Actividad** | Proyecto Integrador - Entregable 1: Configuración inicial del backend |
+| **Actividad** | Proyecto Integrador - Stide-co |
 | **Equipo** | Equipo N° 4 |
 | **Integrantes** | • Jesús Manuel Villegas Terrazas (385743)<br>• Alan Fabricio Vega Gutiérrez (385658)<br>• Edgar Klassen Saenz (385429)<br>• Amir Ovedi Mendiaz Rodriguez (385686) |
 | **Fecha de entrega** | 20/09/2026 |
@@ -31,8 +31,8 @@ Diseñar e implementar una solución web escalable y modular recorriendo un cicl
 - **Node.js**: Entorno de ejecución para JavaScript en el servidor.
 - **JavaScript (ES6+)**: Lenguaje de programación principal del proyecto.
 - **Express.js**: Framework web para la creación y gestión de la API REST.
-- **Morgan**: Middleware para el registro (*logging*) de solicitudes HTTP en consola.
-- **Jest **: Herramienta y framework para la ejecución de pruebas automatizadas de endpoints.
+- **Log4js**: Middleware para el registro (*logging*) de solicitudes HTTP en consola.
+- **Jest**: Herramienta y framework para la ejecución de pruebas automatizadas de endpoints.
 - **ESLint**: Herramienta de análisis estático para garantizar la calidad y estilo del código.
 
 ## Requisitos previos
@@ -106,6 +106,11 @@ Los siguientes recursos forman parte de la arquitectura inicial y responden con 
 El proyecto cuenta con pruebas automatizadas integradas para validar el comportamiento de los controladores y endpoints de la API.
 Para correr las pruebas ejecute:
 *npm test*
+
+## Análisis de calidad de código
+El análisis de calidad y formateo de código se realiza con ESLint para asegurar el cumplimiento de buenas prácticas.
+Para ejecutar la revisión estática ejecuta:
+*npm run lint*
 
 
 ## Estructura general del proyecto
