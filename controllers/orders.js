@@ -63,19 +63,19 @@ function update(req, res, next) {
 // y para eso ya existe el update
 
 
-// function destroy(req, res, next) {
-//   const id = +req.params.id;
-//   const index = orders.findIndex(o => o.id === id);
-//   let deletedOrder = {};
+function destroy(req, res, next) {
+  const id = +req.params.id;
+  const index = orders.findIndex(o => o.id === id);
+  let deletedOrder = {};
 
-//   if (index !== -1) {
-//     deletedOrder = orders.splice(index, 1)[0];
-//   }
+  if (index !== -1) {
+    deletedOrder = orders.splice(index, 1)[0];
+  }
 
-//   res.json({
-//     message: "Orden eliminada",
-//     data: deletedOrder
-//   });
-// }
+  res.json({
+    message: "Orden eliminada",
+    data: deletedOrder
+  });
+}
 
-module.exports = { create, list, find, update};
+module.exports = { create, list, find, update, destroy};
