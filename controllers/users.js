@@ -35,7 +35,7 @@ function list(req, res, next)
 function find(req, res, next) 
 {
   const id = parseInt(req.params.id, 10);
-  const user = users.find(u => u.id == id);
+  const user = users.find(u => u.id === id);
 
   if (!user)
     {
@@ -58,16 +58,17 @@ function update(req, res, next)
   const id = parseInt(req.params.id, 10);
   const userIndex = users.findIndex(u => u.id === id);
 
-  if (userIndex == -1) 
+  if (userIndex === -1) 
     {
     return res.status(404).json({
       message: "No se encontró el usuario"
     });
   }
-
+  const user = users[userIndex]
   const { name, email } = req.body;
 
   // Solo actualizamos los campos que hayamos enviado
+  
   if (name !== undefined)
   {
      user.name = name;
