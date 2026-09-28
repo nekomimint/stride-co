@@ -1,30 +1,21 @@
-// nuestra "base de datos"
-let users = [];
-let nextId = 1;
+const User = require('../models/relationals/User')
+
 
 // CREATE
-function create(req, res, next) 
+async function create(req, res, next) 
 {
-  const { name, email } = req.body;
+  const name = req.body.name;
+  const lastName = req.body.lastName;
+  const email = req.body.email;
+  const user = await User.create({first_name:name, last_name:lastName, email:email});
 
-  // creamos el objeto usuario
-  const newUser = 
-  {
-    id: nextId++,
-    name,
-    email
-  };
-
-  // lo metemos a nuestra "base de datos"
-  users.push(newUser);
-
-  // regresamo la respuesta
-  res.status(201).json({message: "usuario creado",data: newUser });
+  // regresamos la respuesta
+  res.status(201).json({message: "usuario creado",data: user });
 }
 
 // READ todos
-function list(req, res, next) 
-{
+async function list(req, res, next) {
+  const users = await User.findAll();
   res.json({
     message: "lista de usuarios",
     data: users
@@ -32,10 +23,9 @@ function list(req, res, next)
 }
 
 // READ por id
-function find(req, res, next) 
-{
-  const id = parseInt(req.params.id, 10);
-  const user = users.find(u => u.id === id);
+async function find(req, res, next){
+  const id = req.params.id;
+  const user = await User.findByPk(id);
 
   if (!user)
     {
@@ -53,59 +43,51 @@ function find(req, res, next)
 }
 
 // UPDATE
-function update(req, res, next)
+async function update(req, res, next)
  {
-  const id = parseInt(req.params.id, 10);
-  const userIndex = users.findIndex(u => u.id === id);
-
-  if (userIndex === -1) 
-    {
-    return res.status(404).json({
-      message: "No se encontró el usuario"
-    });
-  }
-
-  user = users[userIndex];
-  const { name, email } = req.body;
-
-  // Solo actualizamos los campos que hayamos enviado
+  const id = req.params.id;
+  const name = req.body.name;
+  const lastName = req.body.lasName;
+  const email = req.body.email;
+  const user = await User.findByPk(id);
   
-  if (name !== undefined)
-  {
-     user.name = name;
-  }
-  if (email !== undefined)
-    {
-     user.email = email;
-    }
-
-  res.json({
-    message: "Usuario actualizado",
-    data: users[userIndex]
-  });
-
-
-}
-
-// DELETE
-function destroy(req, res, next) 
-{
-  const id = parseInt(req.params.id, 10);
-  const userIndex = users.findIndex(u => u.id === id);
-
-  if (userIndex === -1) {
+  if (!user) {
     return res.status(404).json({
       message: "Usuario no encontrado"
     });
   }
 
-  // borramos el usuario y aprovechamos que splice regresa una
-  // lista para obtener justo el usuario que acabamos de eliminar
-  const deletedUser = users.splice(userIndex, 1)[0];
+  let changes = {};
+
+  // Solo actualizamos los campos que hayamos enviado
+  changes.first_name = name ? name : user.first_name;
+  changes.last_name = lastName ? lastName : user.last_name;
+  changes.email = email ? email : user.email;
+
+  await user.update(changes);
+  
+  res.json({
+    message: "Usuario actualizado",
+    data: user
+  });
+}
+
+// DELETE
+async function destroy(req, res, next) 
+{
+  const id = req.params.id;
+  const user = await User.findByPk(id);
+
+  if (!user) {
+    return res.status(404).json({
+      message: "Usuario no encontrado"
+    });
+  }
+  await user.destroy();
 
   res.json({
     message: "Usuario eliminado",
-    data: deletedUser
+    data: user
   });
 }
 
