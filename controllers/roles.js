@@ -1,76 +1,83 @@
-let roles = [];
-let nextId = 1;
+const Role = require('../models/relationals/Role');
 
 // CREATE
-function create(req, res, next) {
-  const { name, description } = req.body;
+async function create(req, res, next) {
+  const name = req.body.name;
+  const description = req.body.description;
 
-  const newRole = 
-  {
-    id: nextId++,
-    name: name || "Nuevo Rol",
-    description: description || "Sin descripción"
-  };
-  roles.push(newRole);
+  const role = await Role.create({ name: name, description: description });
 
-  res.status(201).json({
-    message: "Rol creado",
-    data: newRole
-  });
+  res.status(201).json({message: "Rol creado", data: role});
 }
 
-// READ toda la lista
-function list(req, res, next) 
-{
-  res.json({
-    message: "Role list",
-    data: roles
-  });
+// READ todos
+async function list(req, res, next) {
+  const roles = await Role.findAll();
+
+  res.json({message: "Lista de roles", data: roles});
 }
 
-// READ solo regresar uno
-function find(req, res, next) 
-{
-  const id = +req.params.id;
-  const role = roles.find(r => r.id === id);
+// READ por id
+async function find(req, res, next) {
+  const id = req.params.id;
+  const role = await Role.findByPk(id);
+
+  if (!role) {
+    return res.status(404).json({
+      message: "No se encontro el rol",
+      data: null
+    });
+  }
 
   res.json({
-    message: "Rol por id",
-    data: role || {}
+    message: "Rol encontrado",
+    data: role
   });
 }
 
 // UPDATE
-function update(req, res, next) {
-  const id = +req.params.id;
-  const { name, description } = req.body;
-  const role = roles.find(r => r.id === id);
+async function update(req, res, next) {
+  const id = req.params.id;
+  const name = req.body.name;
+  const description = req.body.description;
+  const role = await Role.findByPk(id);
 
-  if (role) 
-    {
-    if (name !== undefined) role.name = name;
-    if (description !== undefined) role.description = description;
+  if (!role) {
+    return res.status(404).json({
+      message: "Rol no encontrado"
+    });
   }
 
+  let changes = {};
+
+  // Actualizamos los campos que se hayan enviado
+  changes.name = name !== undefined ? name : role.name;
+  changes.description = description !== undefined ? description : role.description;
+
+  await role.update(changes);
+
   res.json({
-    message: "se ha actualizado el rol",
-    data: role || {}
+    message: "Rol actualizado",
+    data: role
   });
 }
 
 // DELETE
-function destroy(req, res, next) {
-  const id = +req.params.id;
-  const index = roles.findIndex(r => r.id === id);
-  let deletedRole = {};
+async function destroy(req, res, next) {
+  const id = req.params.id;
+  const role = await Role.findByPk(id);
 
-  if (index !== -1) {
-    deletedRole = roles.splice(index, 1)[0];
+  if (!role) {
+    return res.status(404).json({
+      message: "Rol no encontrado"
+    });
   }
 
+  await role.destroy();
+
   res.json({
-    message: "Se ha eliminado el rol",
-    data: deletedRole
+    message: "Rol eliminado",
+    data: role
   });
 }
 
