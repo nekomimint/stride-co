@@ -1,95 +1,93 @@
-// ejemplo de los permisos
-let permissions = 
-[
-  {
-    id: 1,
-    name: "users.read",
-    description: "Permiso para consultar usuarios"
-  },
-  {
-    id: 2,
-    name: "users.create",
-    description: "Permiso para crear usuarios"
-  },
-];
+// importamos la tablita de Permissions para la base de datos
+const Permission = require('../models/relationals/Permissions')
+// que tipos de permisos vamos a tener estarán definidos desde antes
+// entonces estas no las vamos a usar:
 
+// CREATE
+async function create(req, res, next) 
+{
+  const key = req.body.key;
+  const description = req.body.description;
+  const permission = await Permission.create({key:key, description:description});
+
+  // regresamos la respuesta
+  res.status(201).json({message: "permiso creado",data: permission });
+}
 
 // READ toda la lista
-function list(req, res, next) 
-{
+async function list(req, res, next) {
+  const permissions = await Permission.findAll();
   res.json({
-    message: "Lista de permisos",
+    message: "lista de permisos",
     data: permissions
   });
 }
 
 // READ uno por uno
-function find(req, res, next) 
-{
-  const id = +req.params.id;
-  const permission = permissions.find(p => p.id === id);
+async function find(req, res, next){
+  const id = req.params.id;
+  const permission = await Permission.findByPk(id);
 
-  res.json({
-    message: "permisos por id",
-    data: permission || {}
-  });
-}
-
-
-
-// que tipos de permisos vamos a tener estarán definidos desde antes
-// entonces estas no las vamos a usar:
-
-let nextId = 1;
-// UPDATE
-function update(req, res, next) {
-  const id = +req.params.id;
-  const { key, description } = req.body;
-  const permission = permissions.find(p => p.id === id);
-
-  if (permission) {
-    if (key !== undefined) permission.key = key;
-    if (description !== undefined) permission.description = description;
+  if (!permission)
+    {
+    return res.status(404).json({
+      message: "No se encontro el permiso",
+      data: null
+    });
   }
 
   res.json({
-    message: "El permiso ha sido actualizado",
-    data: permission || {}
+    message: "permiso encontrado",
+    data: permission
+  });
+
+}
+
+// UPDATE
+async function update(req, res, next)
+ {
+  const id = req.params.id;
+  const key = req.body.key;
+  const description = req.body.description;
+  const permission = await Permission.findByPk(id);
+  
+  if (!permission) {
+    return res.status(404).json({
+      message: "Permiso no encontrado"
+    });
+  }
+
+  let changes = {};
+
+  // Solo actualizamos los campos que hayamos enviado
+  changes.key = key ? key : permission.key;
+  changes.description = description ? description : permission.description;
+
+  await permission.update(changes);
+  
+  res.json({
+    message: "Permiso actualizado",
+    data: permission
   });
 }
 
 // DELETE
-function destroy(req, res, next) {
-  const id = +req.params.id;
-  const index = permissions.findIndex(p => p.id === id);
-  let deletedPermission = {};
+async function destroy(req, res, next) 
+{
+  const id = req.params.id;
+  const permission = await Permission.findByPk(id);
 
-  if (index !== -1) {
-    deletedPermission = permissions.splice(index, 1)[0];
+  if (!permission) {
+    return res.status(404).json({
+      message: "Permiso no encontrado"
+    });
   }
+  await permission.destroy();
 
   res.json({
-    message: "El permiso ha sido eliminado",
-    data: deletedPermission
+    message: "Permiso eliminado",
+    data: permission
   });
 }
 
-
-// CREATE
-function create(req, res, next) 
-{
-  const { key, description } = req.body;
-  const newPermission = {
-    id: nextId++,
-    key: key || "PERM_KEY",
-    description: description || "Descripción del permiso"
-  };
-  permissions.push(newPermission);
-
-  res.status(201).json({
-    message: "El permiso ha sido creado",
-    data: newPermission
-  });
-}
-
-module.exports = { list, find, create, update, destroy };
+module.exports = { create, list, find, update, destroy };

@@ -8,6 +8,7 @@
 var app = require('../app');
 var debug = require('debug')('stride-co:server');
 var http = require('http');
+// agregado clase 27/09/26
 const{sequelize} = require('../models/relationals')
 
 /**
@@ -23,7 +24,9 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-async function start(){
+// agregado clase 27/09/26
+async function start()
+{
   await sequelize.authenticate();
   //Crear las tablas si no existen
   await sequelize.sync();
@@ -35,6 +38,8 @@ async function start(){
 /**
  * Listen on provided port, on all network interfaces.
  */
+
+// server.listen(port) se movio dentro de la función start
 start();
 server.on('error', onError);
 server.on('listening', onListening);

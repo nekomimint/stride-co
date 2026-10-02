@@ -1,3 +1,5 @@
+// archivo de configuración para configurar la base de datos
+// ----------------------- clase 27/09/26 -------------------------------
 const {Sequelize} = require('sequelize');
 
 //Conexion con MYSQL
