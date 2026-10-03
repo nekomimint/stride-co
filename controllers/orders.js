@@ -1,32 +1,22 @@
-let orders = [];
-let nextId = 1;
+const {Order} = require('../models/documents');
+
 
 // CREATE
-function create(req, res, next) 
-{
-  const { customerId, total, status } = req.body;
-
-  const newOrder = 
-  {
-    id: nextId++,
-    customerId: customerId || null,
-    total: total || 0,
-    status: status || "pendiente"
-  };
-  orders.push(newOrder);
-
-  res.status(201).json({
-    message: "Orden creada",
-    data: newOrder
-  });
+async function create(req, res, next) {
+    const order = await Order.create(req.body);
+    res.status(201).json({
+      message: "Orden creada",
+      data: order
+    });
 }
 
 // READ toda la lista
-function list(req, res, next) {
-  res.json({
-    message: "Lista de ordenes",
-    data: orders
-  });
+async function list(req, res, next) {
+    const orders = await Order.find();
+    res.json({
+      message: "Lista de ordenes",
+      data: orders
+    });
 }
 
 // READ solo uno

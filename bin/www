@@ -12,6 +12,9 @@ var http = require('http');
 // agregado clase 27/09/26
 const{sequelize} = require('../models/relationals')
 
+//Clase 03/10
+const connectMongo = require('../config/mongoose');
+
 /**
  * Get port from environment and store in Express.
  */
@@ -37,6 +40,10 @@ async function start()
 
   await sequelize.sync({alter:true});
   debug('conexion a mysql generada correctamente.');
+
+  //Agrefado 03/10 para conectar mongodb
+  await connectMongo();
+  debug('Conexion a Mongodb Correcta');
   server.listen(port);
 }
 
