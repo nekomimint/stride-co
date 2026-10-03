@@ -8,6 +8,7 @@
 var app = require('../app');
 var debug = require('debug')('stride-co:server');
 var http = require('http');
+
 // agregado clase 27/09/26
 const{sequelize} = require('../models/relationals')
 
@@ -24,12 +25,17 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-// agregado clase 27/09/26
+// agregado clase 27/09/26 funcion start
 async function start()
 {
   await sequelize.authenticate();
   //Crear las tablas si no existen
-  await sequelize.sync();
+  // agregado 02/10/26
+  // {alter: true} lo que hace es comparar nuestros modelos (lo que escribimos en models/relations)
+  // con las tablas de las bases de datos, de tal forma que si no coinciden trata de modificar
+  // las tablas para que coincidan con lo establecido.
+
+  await sequelize.sync({alter:true});
   debug('conexion a mysql generada correctamente.');
   server.listen(port);
 }

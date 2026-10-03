@@ -1,19 +1,31 @@
+const Permission = require('../models/relationals/Permission');
 const Role = require('../models/relationals/Role');
 
 // CREATE
-async function create(req, res, next) {
-  const name = req.body.name;
-  const description = req.body.description;
 
-  const role = await Role.create({ name: name, description: description });
+// body: {name, description, permissionIds: [1,2] }
+async function create(req, res, next) 
+{
+  try 
+  {
+    // crea el rol con la forma moderna: o sea pasarle directamente el cuerpo al create
+    const role = await Role.create(req.body); 
 
-  res.status(201).json({message: "Rol creado", data: role});
+    // asignamos los permisos
+    if(req.body.permissionsIdS) await role.setPermissions(req.body.permissionsIdS);
+    res.status(201).json({message: 'Role created'  , data: role})
+  }
+  catch(err)
+  {
+    next(err)
+  }
+
 }
 
 // READ todos
-async function list(req, res, next) {
-  const roles = await Role.findAll();
-
+async function list(req, res, next) 
+{
+  const roles = await Role.findAll({include: {model:Permission, as: 'permissions'}});
   res.json({message: "Lista de roles", data: roles});
 }
 

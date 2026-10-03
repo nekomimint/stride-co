@@ -1,5 +1,5 @@
 // importamos la tablita de Permissions para la base de datos
-const Permission = require('../models/relationals/Permissions')
+const Permission = require('../models/relationals/Permission')
 // que tipos de permisos vamos a tener estarán definidos desde antes
 // entonces estas no las vamos a usar:
 
@@ -11,7 +11,7 @@ async function create(req, res, next)
   const permission = await Permission.create({key:key, description:description});
 
   // regresamos la respuesta
-  res.status(201).json({message: "permiso creado",data: permission });
+  res.status(201).json({message: "permiso creado", data: permission });
 }
 
 // READ toda la lista
