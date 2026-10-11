@@ -1,6 +1,5 @@
 const {Order} = require('../models/documents');
 
-
 // CREATE
 async function create(req, res, next) {
     const order = await Order.create(req.body);
@@ -12,7 +11,9 @@ async function create(req, res, next) {
 
 // READ toda la lista
 async function list(req, res, next) {
-    const orders = await Order.find();
+    // faltaba agregregar populate para mostrar la informacion del cliente
+    // en lugar de solamente su objectId
+    const orders = await Order.find().populate('customerId');
     res.json({
       message: "Lista de ordenes",
       data: orders
@@ -20,31 +21,41 @@ async function list(req, res, next) {
 }
 
 // READ solo uno
-function find(req, res, next) {
-  const id = +req.params.id;
-  const order = orders.find(o => o.id === id);
-
+async function find(req, res, next) 
+{
+  // tambien en lugar de mostrar el id a secas, mostramos la informacion del cliente
+  // asociado a esa orden
+  const order = await Order.findById(req.params.id).populate('customerId');
+  if (!order) 
+  {
+    return res.status(404).json({ message: "Orden no encontrada" });
+  }
   res.json({
     message: "Orden por id",
-    data: order || {}
+    data: order
   });
 }
 
 // UPDATE
-function update(req, res, next) {
-  const id = +req.params.id;
-  const { status, total } = req.body;
-  const order = orders.find(o => o.id === id);
+async function update(req, res, next) 
+{
 
-  if (order) {
-    if (status !== undefined) order.status = status;
-    if (total !== undefined) order.total = total;
+    const order = await Order.findByIdAndUpdate(
+    req.params.id,
+    // como segundo parametro pide el objeto
+    // si el objeto no tiene todas las propiedades mongoose es inteligente
+    // para saber que solo tiene que actualizar las que si tiene
+    req.body,
+    { new: true } // Devuelve el documento actualizado
+  );
+  if (!order) {
+    return res.status(404).json({ message: "Orden no encontrada" });
   }
-
   res.json({
     message: "Orden actualizada",
-    data: order || {}
+    data: order
   });
+
 }
 
 // DELETE
@@ -53,19 +64,19 @@ function update(req, res, next) {
 // y para eso ya existe el update
 
 
-function destroy(req, res, next) {
-  const id = +req.params.id;
-  const index = orders.findIndex(o => o.id === id);
-  let deletedOrder = {};
+async function destroy(req, res, next) 
+{
+      const order = await Order.findByIdAndDelete(req.params.id);
+      if (!order) 
+      {
+        return res.status(404).json({ message: "Orden no encontrada" });
+      }
+      
+      res.json({
+        message: "Orden eliminada",
+        data: order
+      });
 
-  if (index !== -1) {
-    deletedOrder = orders.splice(index, 1)[0];
-  }
-
-  res.json({
-    message: "Orden eliminada",
-    data: deletedOrder
-  });
 }
 
 module.exports = { create, list, find, update, destroy};
