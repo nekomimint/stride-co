@@ -1,5 +1,6 @@
 const User = require('../models/relationals/User');
 const Role = require("../models/relationals/Role");
+const {hashPassword} = require('../utils/password')
 
 // otra opcion es 
 // const Role = require('../models/relationals');
@@ -12,8 +13,11 @@ async function create(req, res, next)
   const lastName = req.body.lastName;
   const email = req.body.email;
   const roleId = req.body.roleId;
+  const password = req.body.password;
+  const passwordData = await hashPassword(password);
   const user = await User.create({first_name:name, last_name:lastName,
-  email:email, role_id: roleId }); 
+  email:email, role_id: roleId, password: passwordData.securePassword, salt_key: passwordData.saltKey}); 
+
 
   // regresamos la respuesta
   res.status(201).json({message: "usuario creado",data: user });
@@ -27,7 +31,7 @@ async function list(req, res, next) {
   
   // as es el alias de esa relacion que definimos previamente en la relacion 1-N 
   // que hicimos en el index, por eso es importante que coincidan.
-  const users = await User.findAll({include:{model: Role, as: 'role'}});
+  const users = await User.findAll({attributes: ['first_name', 'last_name', 'email'], include:{model: Role, as: 'role'}});
   res.json({
     message: "lista de usuarios",
     data: users
@@ -59,7 +63,7 @@ async function update(req, res, next)
  {
   const id = req.params.id;
   const name = req.body.name;
-  const lastName = req.body.lasName;
+  const lastName = req.body.lastName;
   const email = req.body.email;
   const user = await User.findByPk(id);
   const roleId = req.body.roleId;
@@ -76,7 +80,8 @@ async function update(req, res, next)
   changes.first_name = name ? name : user.first_name;
   changes.last_name = lastName ? lastName : user.last_name;
   changes.email = email ? email : user.email;
-  changes.role_id = role_id ? roleId: user.role_id; // agregado
+  changes.role_id = roleId ? roleId: user.role_id; 
+
 
   await user.update(changes);
   

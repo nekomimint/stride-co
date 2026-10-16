@@ -13,6 +13,7 @@ const variantsRouter = require('./routes/variants');
 const inventoryRouter = require('./routes/inventory');
 const customersRouter = require('./routes/customers');
 const ordersRouter = require('./routes/orders');
+const authRouter = require('./routes/auth');
 
 var app = express();
 
@@ -27,6 +28,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+// agregado en la clase 10/octubre
+app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/roles', rolesRouter);
 app.use('/api/permissions', permissionsRouter);

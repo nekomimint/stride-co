@@ -50,8 +50,7 @@ async function update(req, res, next) {
 } 
 
 // DELETE
-async function destroy(req, res, next) 
-{
+async function destroy(req, res, next) {
     const customer = await Customer.findByIdAndDelete(req.params.id);
     if (!customer) {
       return res.status(404).json({ message: "Cliente no encontrado" });
