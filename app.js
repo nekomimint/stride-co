@@ -18,8 +18,9 @@ const authRouter = require('./routes/auth');
 
 var app = express();
 
+// Agregado clase 17/octubre
+// middleware para solicitar el token en cada ruta a excepcion: .unless la ruta del login
 const secret = "074dfc1b1a6c4d53ea085b140ed0bd369f8c934b";
-
 app.use(expressjwt({secret, algorithms:["HS256"]}).unless({path:['/api/auth/login']}));
 
 // view engine setup

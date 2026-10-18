@@ -19,9 +19,12 @@ const User = sequelize.define('User', {
     //-> created_at, updated_at
 });
 
+// para definir como se debe ver el modelo, asi evitamos 
+// comprometer información. Esto es para funciones como el create, donde regresamos un json
+// una vez insertado. Para list y find se usa attributes
 User.prototype.toJSON = function(){
     const values = {...this.get()}; 
-    delete values.password_hash;
+    delete values.password;
     delete values.salt_key;
     return values;
 }
