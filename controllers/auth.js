@@ -12,12 +12,16 @@ const INVALID_CREDENTIALS = {message: "Invalid credentials"};
 function signToken(user){
     const jwtUser = {
         // tiempo de expiración
-        expiresIn: "15m", 
+        expiresIn: process.env.JWT_EXPIRES_IN,
         // la aplicación que lo emite
-        issuer: "stride-co", 
-        audience: "stride-co-api",
+        issuer: process.env.JWT_ISSUER,
+        audience: process.env.JWT_AUDIENCE,
          // algoritmo a utilizar
         algorithm: "HS256"
+
+        
+
+
     };
 
 
