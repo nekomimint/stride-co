@@ -136,14 +136,14 @@ stride-co/
 - Metodo utilizado para proteger contraseñas (bcrypt, factor de costo y campos salt key y password hash).
 
     - Bcrypt : Hashing de contraseñas
-    - Factor de costo -> 10, es decir, que el hashing de password se hara 2^10, es decir, 1024 veces.
-    - Salt key -> Es un valor unico por contraseña que altera como se genera, esta incorporado por default en el bcrypt.
+    - Factor de costo -> 10, es el trabajo computacional que le cuesta a bcrypt encriptar una contraseña.
+    - Salt key -> Es un valor unico por contraseña que altera como se genera, esta incorporado por default en el bcrypt y se almacena en la base de datos.
     - Password Hash -> Es el campo que se almacena en la base de datos en la columna 'password'.
 - Librerias utilizadas para emitir y verificar el JWT.
 
     Se utilizaron 3 librerias para emitir y verificar JWT:
     ```jsonwebtoken``` -> Crear y verificar los tokens, utiliza header.payload.signature para generarlos y compararlos.
-    ```express-jwt``` -> Protege las rutas de expressJS, comprueba el token y la secretKey con el algoritmo configurado.
+    ```express-jwt``` -> Protege las rutas de expressJS, es el middleware que integra la verificacion.
     ```bcrypt``` -> Transformar la contraseña en un hash para almcenarlo en la base de datos.
 - Endpoint de login.
 
@@ -153,14 +153,15 @@ stride-co/
     Retorna la información del usuario con el que haz iniciado sesión, y para ello ocupas tener previamente tu token de autenticación, de lo contrario retornara token expirado o invalido.
 - Variables de entorno requeridas.
 
-    Se requieren un total de 4 variables de entorno: 
-    - ```SECRET_KEY``` -> Es el hash que utiliza JWT para generar el token.
+    Se requieren un total de 5 variables de entorno: 
+    - ```SECRET_KEY``` -> Es la llave que utiliza JWT para firmar y verificar tokens, tambien permite detectar si un token fue alterado.
     - ```BCRYPT_SALT_ROUNDS``` -> Cantidad de veces que bcrypt repite el proceso de un cifrado mediante un exponente con base 2 (2^BCRYPT_SALT_ROUNDS)
     - ```JWT_EXPIRES_IN```-> Es el tiempo que tarda en expirar el token, cuando expira ya no es valido para inciar autenticarse.
     - ```JWT_ISSUER``` -> Quien emite el token.
     - ```JWT_AUDIENCE``` -> Quienes usan el token.
 - Ejemplo del header Authorization: 
-    Bearer <eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzkyMzc1NDk0LCJleHAiOjE3OTIzNzYzOTQsImF1ZCI6InN0cmlkZS1jby1hcGkiLCJpc3MiOiJzdHJpZGUtY28ifQ.XQet3s1lwifmih4F5a1BfAOH7u9PuxQcsqfFTIRnHKg>.
+    
+    Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzkyMzc1NDk0LCJleHAiOjE3OTIzNzYzOTQsImF1ZCI6InN0cmlkZS1jby1hcGkiLCJpc3MiOiJzdHJpZGUtY28ifQ.XQet3s1lwifmih4F5a1BfAOH7u9PuxQcsqfFTIRnHKg
 - Tiempo de expiracion configurado.
 
     15 minutos, quiere decir que hay 15 minutos disponibles desde que se hace un login para hacer peticiones o consultas en la API, una vez finalizan los 15 minutos cualquier intento dara como respuesta un mensaje de token expirado.
