@@ -164,7 +164,7 @@ stride-co/
     Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzkyMzc1NDk0LCJleHAiOjE3OTIzNzYzOTQsImF1ZCI6InN0cmlkZS1jby1hcGkiLCJpc3MiOiJzdHJpZGUtY28ifQ.XQet3s1lwifmih4F5a1BfAOH7u9PuxQcsqfFTIRnHKg
 - Tiempo de expiracion configurado.
 
-    15 minutos, quiere decir que hay 15 minutos disponibles desde que se hace un login para hacer peticiones o consultas en la API, una vez finalizan los 15 minutos cualquier intento dara como respuesta un mensaje de token expirado.
+    15 minutos, quiere decir que hay 15 minutos disponibles desde que se hace un login para hacer peticiones o consultas en la API, una vez finalizan los 15 minutos cualquier intento dará como respuesta un mensaje de token expirado.
 
 ## Autores
 
