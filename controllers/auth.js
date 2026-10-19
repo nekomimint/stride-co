@@ -1,24 +1,29 @@
+
 const {User} = require('../models/relationals');
 const {verifyPassword} = require('../utils/password');
 const jwt = require('jsonwebtoken');
-
+    // el atacante puede ver el payload, el sub, pero
+    // esto es lo que el atacante no podra recrear:
+    // Never write in code the sensitive data
+const SECRET_KEY = process.env.SECRET_KEY
 const INVALID_CREDENTIALS = {message: "Invalid credentials"};
 
 // agregado clase 17 de octubre
 function signToken(user){
     const jwtUser = {
-        expiresIn: "15m", // tiempo de expiración
-        issuer: "stride-co", // la aplicación que lo emite
+        // tiempo de expiración
+        expiresIn: "15m", 
+        // la aplicación que lo emite
+        issuer: "stride-co", 
         audience: "stride-co-api",
-        algorithm: "HS256" // algoritmo a utilizar
+         // algoritmo a utilizar
+        algorithm: "HS256"
     };
-    // el atacante puede ver el payload, el sub, pero
-    // esto es lo que el atacante no podra recrear:
-    const secret = "074dfc1b1a6c4d53ea085b140ed0bd369f8c934b";
+
 
     // para entregar el token firmado
     // sub: sujeto, lo que identifica al usuario
-    return jwt.sign({sub: String(user.id)}, secret, jwtUser);
+    return jwt.sign({sub: String(user.id)}, SECRET_KEY, jwtUser);
 }
 
 async function login(req, res, next){
@@ -36,7 +41,8 @@ async function login(req, res, next){
         data:{
             token: signToken(user),
             token_type: "Bearer",
-            expiresIn: "15m"  // indicarle al fronted en cuanto tiempo expira el token
+             // indicarle al fronted en cuanto tiempo expira el token
+            expiresIn: "15m" 
         }
     });
 
