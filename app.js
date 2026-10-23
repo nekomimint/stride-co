@@ -5,6 +5,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const {expressjwt} = require('express-jwt');
+// agregado clase 23/oct
+const i18n = require('./config/i18n');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -34,6 +36,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// agregado 28/octubre
+// tiene que ser en este punto para que haya pasado primero por cookieParser()
+// inyecta el objeto i18n para poder usarl EN CADA CONTROLADOR
+// a esto se le llama inyeccion de dependencias
+app.use(i18n.init)
 
 app.use('/', indexRouter);
 // agregado en la clase 10/octubre
