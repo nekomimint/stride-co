@@ -49,4 +49,4 @@ User.belongsTo(Role, {foreignKey: 'role_id', as: 'role'})
     })
 
 
-module.exports = {sequelize, User};
+module.exports = {sequelize, User, Role, Permission};

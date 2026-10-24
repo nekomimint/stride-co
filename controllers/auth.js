@@ -1,5 +1,5 @@
 
-const {User} = require('../models/relationals');
+const {User, Role} = require('../models/relationals');
 const {verifyPassword} = require('../utils/password');
 const jwt = require('jsonwebtoken');
     // el atacante puede ver el payload, el sub, pero
@@ -28,14 +28,14 @@ function signToken(user){
 
     // para entregar el token firmado
     // sub: sujeto, lo que identifica al usuario
-    return jwt.sign({sub: String(user.id)}, SECRET_KEY, jwtUser);
+    return jwt.sign({sub: String(user.id), role: user.role?.name}, SECRET_KEY, jwtUser);
 }
 
 async function login(req, res, next){
 
     // Un usuario con estado active = false tampoco deberá poder autenticarse || !user.active
     const {email, password} = req.body;
-    const user = await User.findOne({where: {email}});
+    const user = await User.findOne({where: {email}, include: [{ model: Role, as: 'role' }]});
     if (!user || !user.active) return res.status(401).json({message: req.__('auth.invalidCredentials')});
     
     const valid = await verifyPassword(password, user.password);
