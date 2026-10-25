@@ -1,4 +1,5 @@
 //Creamos los roles falsos para el test
+//Se necesita actualizar node a la versión 24.9 y usar el comando "npm i accesscontrol@2.2.1"
 jest.mock('../models/relationals', () =>{
     const roles = [
         {name: 'ADMIN', permissions: [{key: 'orders:delete:any'}]},
