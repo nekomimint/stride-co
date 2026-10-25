@@ -25,16 +25,7 @@ var app = express();
 // middleware para solicitar el token en cada ruta a excepcion: .unless la ruta del login
 const SECRET_KEY = process.env.SECRET_KEY
 
-//app.use(expressjwt({secret: SECRET_KEY, algorithms:["HS256"]}).unless({path:['/api/auth/login']}));
-
-app.use(
-  expressjwt({ secret: SECRET_KEY, algorithms: ["HS256"] }).unless({
-    path: [
-      '/api/auth/login',
-      { url: '/api/users', methods: ['POST'] } // Permite crear usuarios sin pedir token
-    ]
-  })
-);
+app.use(expressjwt({secret: SECRET_KEY, algorithms:["HS256"]}).unless({path:['/api/auth/login']}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
