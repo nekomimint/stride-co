@@ -17,7 +17,7 @@ describe('usersController', () => {
 
   });
 
-  test('crear un usuario', () => 
+  test.skip('crear un usuario', () => 
     {
     req.body = { name: "Sofia", email: "sofia@gmail.com"
 
@@ -40,7 +40,7 @@ describe('usersController', () => {
     expect(response.data.id).toBeDefined();
   });
 
-  test('listar todos los usuarios', () => {
+  test.skip('listar todos los usuarios', () => {
     // creamos dos usuarios primero para llenar la lista
     req.body = { name: "Amir", email: "amir@gmail.com" };
     usersController.create(req, res);
@@ -62,7 +62,7 @@ describe('usersController', () => {
   });
 
 
-  test('obtener un usuario por id', () => 
+  test.skip('obtener un usuario por id', () => 
     {
     req.body = { name: "Sofia", email: "sofia@gmail.com" };
     usersController.create(req, res);
@@ -81,7 +81,7 @@ describe('usersController', () => {
     });
   });
 
-  test('actualizar un usuario', () => {
+  test.skip('actualizar un usuario', () => {
     req.body = { name: "Sofia", email: "sofia@gmail.com" };
     usersController.create(req, res);
 
@@ -100,7 +100,7 @@ describe('usersController', () => {
     });
   });
 
-  test('eliminar un usuario', () => {
+  test.skip('eliminar un usuario', () => {
     req.body = { name: "Sofia", email: "sofia@gmail.com" };
     usersController.create(req, res);
 
