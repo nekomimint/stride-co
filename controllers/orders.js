@@ -1,6 +1,11 @@
 // importamos
 const {Order} = require('../models/documents');
 
+//función que devuelve true si el usuario puede acceder a esa orden
+//function canAccess(req, order){
+
+//}
+
 
 // CREATE
 async function create(req, res, next) {
