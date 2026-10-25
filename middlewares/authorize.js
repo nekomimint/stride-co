@@ -30,6 +30,8 @@ const authorize = (resource, action, possession = 'any') => {
                 return res.status(403).json({ message: '403 Forbidden: No tienes permiso' });
             }
 
+            req.canAny = ac.can(String(userRole))[`${action}Any`](resource).granted;
+            
             // Si todo está bien, pasa al controlador
             next();
         } catch (error) {

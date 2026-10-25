@@ -1,4 +1,4 @@
---Creación de la matriz rbac en la base de datos
+-- Creación de la matriz rbac en la base de datos
 -- Para insertar este archivo en la base de datos se utiliza el comando:  docker exec -it "Nombre/id del contenedor" mysql -u root -p stride_co < seed_rbac.sql
 
 
@@ -24,7 +24,7 @@ INSERT INTO permissions (`key`, description, created_at, updated_at) VALUES
 ON DUPLICATE KEY UPDATE description=VALUES(description);
 
 
---Asignan los permisos a los roles determinados
+-- Asignan los permisos a los roles determinados
 
 -- ADMIN
 INSERT INTO role_permissions (role_id, permission_id)

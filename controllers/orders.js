@@ -2,14 +2,14 @@
 const {Order} = require('../models/documents');
 
 //función que devuelve true si el usuario puede acceder a esa orden
-//function canAccess(req, order){
-
-//}
+function canAccess(req, order){
+  return req.canAny || String(order.userId) === String(req.user.id);
+}
 
 
 // CREATE
 async function create(req, res, next) {
-    const order = await Order.create(req.body);
+    const order = await Order.create({...req.body, userId: req.user.id});
     res.status(201).json({
       message: "Orden creada",
       data: order
@@ -18,7 +18,8 @@ async function create(req, res, next) {
 
 // READ toda la lista
 async function list(req, res, next) {
-    const orders = await Order.find();
+    const filter = req.canAny ? {} : {userId: req.user.id};
+    const orders = await Order.findAll(filter);
     res.json({
       message: "Lista de ordenes",
       data: orders
@@ -26,30 +27,49 @@ async function list(req, res, next) {
 }
 
 // READ solo uno
-function find(req, res, next) {
-  const id = +req.params.id;
-  const order = orders.find(o => o.id === id);
+async function find(req, res, next) {
+  const order = await Order.findByPk(req.params.id);
+
+  if(!order)
+  {
+    return res.status(404).json({message: 'Orden no encontrada'});
+  }
+
+  if(!canAccess(req, order))
+  {
+    return res.status(403).json({message: 'La orden no pertenece al usuario actual'})
+  }
 
   res.json({
     message: "Orden por id",
-    data: order || {}
+    data: order
   });
 }
 
 // UPDATE
-function update(req, res, next) {
-  const id = +req.params.id;
-  const { status, total } = req.body;
-  const order = orders.find(o => o.id === id);
+async function update(req, res, next) {
+  const order = await Order.findByPk(req.params.id);
 
-  if (order) {
-    if (status !== undefined) order.status = status;
-    if (total !== undefined) order.total = total;
+  if (!order) {
+    return res.status(404).json({message: 'Orden no encontrada'});
   }
+
+  if(!canAccess(req, order)){
+    return res.status(403).json({message: 'La orden no pertenece al usuario actual'});
+  }
+
+  const {status, total} = req.body;
+  if(status !== undefined){
+    order.status = status;
+  }
+  if(total !== undefined){
+    order.total = total;
+  }
+  await order.save();
 
   res.json({
     message: "Orden actualizada",
-    data: order || {}
+    data: order
   });
 }
 
@@ -58,8 +78,27 @@ function update(req, res, next) {
 // no podemos eliminar solamente cambiar de estado
 // y para eso ya existe el update
 
+async function destroy(req, res, next) {
+  const order = await Order.findByPk(req.params.id);
 
-function destroy(req, res, next) {
+  if(!order){
+    return res.status(404).json({message: 'Orden no encontrada'});
+  }
+
+  if(!canAccess(req, order))
+  {
+    return res.status(403).json({message: 'La orden no pertenece al usuario actual'})
+  }
+  await order.destroy;
+
+  res.json({
+    message: "Orden eliminada",
+    data: order
+  });
+}
+
+
+/*function destroy(req, res, next) {
   const id = +req.params.id;
   const index = orders.findIndex(o => o.id === id);
   let deletedOrder = {};
@@ -72,6 +111,6 @@ function destroy(req, res, next) {
     message: "Orden eliminada",
     data: deletedOrder
   });
-}
+}*/
 
 module.exports = { create, list, find, update, destroy};
