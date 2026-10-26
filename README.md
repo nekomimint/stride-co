@@ -166,6 +166,83 @@ stride-co/
 
     15 minutos, quiere decir que hay 15 minutos disponibles desde que se hace un login para hacer peticiones o consultas en la API, una vez finalizan los 15 minutos cualquier intento dará como respuesta un mensaje de token expirado.
 
+
+## Control de acceso basado en roles
+
+
+#### Roles utilizados
+* **`admin`**: Administrador con acceso global a todos los recursos y operaciones.
+* **`sales`**: Vendedor puede ver productos y consultar órdenes generales o propias.
+* **`user`**: Usuario solo puede gestionar únicamente sus propias órdenes.
+
+### Convención utilizada para Permission.key
+
+Los permisos siguen una estructura sencilla que consta de tres partes separadas por dos puntos:
+
+`recurso:accion:posesion`
+
+* **Recurso:** Es el módulo (por ejemplo `products`).
+* **Acción:** Lo que se quiere hacer (por ejemplo `create`, `read`, `update`, `delete`).
+* **Posesión:** El alcance del permiso (`any` para cualquier registro o `own` solo para los propios).
+
+
+### Permisos definidos
+
+##### Products
+* **`products:create:any`**: Crear productos.
+* **`products:read:any`**: Ver productos.
+* **`products:update:any`**: Editar productos.
+* **`products:delete:any`**: Eliminar productos.
+
+##### Orders
+* **`orders:create:any`**: Crear órdenes.
+* **`orders:read:any`**: Ver todas las órdenes de forma global.
+* **`orders:read:own`**: Ver únicamente las órdenes propias.
+* **`orders:update:own`**: Editar únicamente las órdenes propias.
+
+##### Users
+* **`users:read:any`**: Ver listado y detalles de usuarios.
+* **`users:update:any`**: Editar información de usuarios.
+
+### Matriz RBAC
+
+| Permiso (`Permission.key`) | Descripción | Admin | Sales  | User  |
+| :--- | :--- | :---: | :---: | :---: |
+| **`products:create:any`** | Crear productos | Sí | - | - |
+| **`products:read:any`** | Ver productos | Sí | Sí | - |
+| **`products:update:any`** | Editar productos | Sí | - | - |
+| **`products:delete:any`** | Eliminar productos | Sí | - | - |
+| **`orders:create:any`** | Crear órdenes | Sí | Sí | Sí |
+| **`orders:read:own`** | Ver órdenes propias | Sí | Sí | Sí |
+| **`orders:read:any`** | Ver todas las órdenes | Sí | Sí | - |
+| **`orders:update:own`** | Editar órdenes propias | Sí | - | Sí |
+| **`users:read:any`** | Ver usuarios | Sí | - | - |
+| **`users:update:any`** | Editar usuarios | Sí | - | - |
+
+### Enpoints protegidos
+`productos`, `orders` y `users`
+
+### Ejemplo de permiso any
+
+Pensada para el administrador, el cual puede eliminar cualquier recurso:
+
+```javascript
+/* DELETE product by id (DELETE ANY - Solo Admin) */
+router.delete('/:id', authorize('products', 'delete', 'any'), log('Deleting product'), controller.destroy);
+``` 
+### Ejemplo de permiso own
+
+Pensada para que el usuario autenticado solo pueda consultar o gestionar sus propios registros:
+
+```javascript
+/* GET order by id (READ OWN - Ver orden propia) */
+router.get('/:id', authorize('orders', 'read', 'own'), log('Searching order by id'), controller.find);
+```
+
+### Como se obtiene la configuración de permisos desde la base de datos
+
+En el archivo `seed_rbac.sql` se realizan las inserciones a las tres tablas de nuestra base de datos: `roles`, `permissions` y `role_permissions`. Dentro de estas tablas hemos definido quién puede hacer qué. Luego, cuando el cliente hace una petición a una ruta protegida, es el middleware `authorize` el que se encarga de verificar quién está ejecutando la acción (saberlo gracias al JWT y a `req.auth`), consultar la configuración de permisos y confirmar que tenga asignado dicho permiso.
+
 ## Autores
 
 * **Jesús Manuel Villegas Terrazas** — 385743
