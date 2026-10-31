@@ -1,4 +1,6 @@
+// This load all env and secrets to config
 require('dotenv').config();
+const config = require('config')
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -21,8 +23,8 @@ var app = express();
 
 // Agregado clase 17/octubre
 // middleware para solicitar el token en cada ruta a excepcion: .unless la ruta del login
-const SECRET_KEY = process.env.SECRET_KEY
-
+const SECRET_KEY = config.get("auth.jwtSecret")
+// DIsable for test
 app.use(expressjwt({secret: SECRET_KEY, algorithms:["HS256"]}).unless({path:['/api/auth/login']}));
 
 // view engine setup

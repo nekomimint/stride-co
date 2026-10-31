@@ -1,21 +1,21 @@
-
+const config = require("config")
 const {User} = require('../models/relationals');
 const {verifyPassword} = require('../utils/password');
 const jwt = require('jsonwebtoken');
     // el atacante puede ver el payload, el sub, pero
     // esto es lo que el atacante no podra recrear:
     // Never write in code the sensitive data
-const SECRET_KEY = process.env.SECRET_KEY
+const SECRET_KEY = config.get('auth.jwtSecret')
 const INVALID_CREDENTIALS = {message: "Invalid credentials"};
 
 // agregado clase 17 de octubre
 function signToken(user){
     const jwtUser = {
         // tiempo de expiración
-        expiresIn: process.env.JWT_EXPIRES_IN,
+        expiresIn: config.get('jwtExpires'),
         // la aplicación que lo emite
-        issuer: process.env.JWT_ISSUER,
-        audience: process.env.JWT_AUDIENCE,
+        issuer: config.get('jetIssuer'),
+        audience: config.get('jwtAudience'),
          // algoritmo a utilizar
         algorithm: "HS256"
 

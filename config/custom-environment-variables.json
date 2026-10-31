@@ -1,0 +1,23 @@
+{
+    "mysql":
+    {
+        "host": "MYSQL_HOST",
+        "port": "MYSQL_PORT",
+        "database": "MYSQL_DATABASE_NAME",
+        "user": "MYSQL_USER",
+        "password": "MYSQL_PASS"
+    },
+    "mongodb": {
+        "url": "MONGO_DB",
+        "user": "MONGO_USER",
+        "password": "MONGO_PASS"
+    },
+    "auth": {
+        "jwtSecret": "SECRET_KEY",
+        "saltRounds": "BCRYPT_SALT_ROUNDS",
+        "jwtExpires": "JWT_EXPIRES_IN",
+        "jwtIssuer": "JWT_ISSUER",
+        "jwtAudience": "JWT_AUDIENCE"
+    }
+    
+}
