@@ -19,7 +19,7 @@ router.get('/', log('Listing customers'), controller.list);
 router.get('/:id', log('Searching customer by id'), controller.find);
 
 /*Put customers to update */
-router.put('/:id', log('Updating customer}'), controller.update);
+router.put('/:id', log('Updating customer'), controller.update);
 
 /*DELETE customers by id*/
 router.delete('/:id', log('Deleting customer'), controller.destroy);

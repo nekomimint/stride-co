@@ -4,7 +4,7 @@ const { Product } = require('../models/documents');
 async function create(req, res, next) {
     const product = await Product.create(req.body);
     res.status(201).json({
-      message: "Producto creado",
+      message: req.__('product.productCreated'),
       data: product
     });
 }
@@ -13,7 +13,7 @@ async function create(req, res, next) {
 async function list(req, res, next) {
     const products = await Product.find();
     res.json({
-      message: "Lista de productos",
+      message: req.__('product.findProducts'),
       data: products
     });
 }
@@ -22,10 +22,10 @@ async function list(req, res, next) {
 async function find(req, res, next) {
     const product = await Product.findById(req.params.id);
     if (!product) {
-      return res.status(404).json({ message: "Producto no encontrado" });
+      return res.status(404).json({ message: req.__('product.productNotFound')});
     }
     res.json({
-      message: "Producto por id",
+      message: req.__('product.productFound'),
       data: product
     });
 }
@@ -34,10 +34,10 @@ async function find(req, res, next) {
 async function update(req, res, next) {
     const product = await Product.findByIdAndUpdate( req.params.id, req.body, { new: true } );
     if (!product) {
-      return res.status(404).json({ message: "Producto no encontrado" });
+      return res.status(404).json({ message: req.__('product.productNotFound') });
     }
     res.json({
-      message: "Producto actualizado",
+      message: req.__('product.productUpdated'),
       data: product
     });
 }
@@ -46,10 +46,10 @@ async function update(req, res, next) {
 async function destroy(req, res, next) {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {
-      return res.status(404).json({ message: "Producto no encontrado" });
+      return res.status(404).json({ message: req.__('product.productNotFound') });
     }
     res.json({
-      message: "Producto eliminado",
+      message: req.__('product.productDeleted'),
       data: product
     });
 }

@@ -4,7 +4,7 @@ const { Variant } = require('../models/documents');
 async function create(req, res, next) {
     const variant = await Variant.create(req.body);
     res.status(201).json({
-      message: "Variante creada",
+      message: req.__('variant.variantCreated'),
       data: variant
     });
 }
@@ -13,7 +13,7 @@ async function create(req, res, next) {
 async function list(req, res, next) {
     const variants = await Variant.find();
     res.json({
-      message: "Lista de variantes",
+      message: req.__('variant.findVariant'),
       data: variants
     });
 }
@@ -22,10 +22,10 @@ async function list(req, res, next) {
 async function find(req, res, next) {
     const variant = await Variant.findById(req.params.id);
     if (!variant) {
-      return res.status(404).json({ message: "Variante no encontrada" });
+      return res.status(404).json({ message: req.__('variant.variantNotFound')});
       }
       res.json({
-        message: "Variante por id",
+        message: req.__('variant.variantFound'),
         data: variant
       });
 }
@@ -34,10 +34,10 @@ async function find(req, res, next) {
 async function update(req, res, next) {
     const variant = await Variant.findByIdAndUpdate( req.params.id, req.body, { new: true } );
     if (!variant) {
-      return res.status(404).json({ message: "Variante no encontrada" });
+      return res.status(404).json({ message: req.__('variant.variantNotFound') });
     }
     res.json({
-      message: "Variante actualizada",
+      message: req.__('variant.variantUpdated'),
       data: variant
     });
 }
@@ -46,10 +46,10 @@ async function update(req, res, next) {
 async function destroy(req, res, next) {
     const variant = await Variant.findByIdAndDelete(req.params.id);
     if (!variant) {
-      return res.status(404).json({ message: "Variante no encontrada" });
+      return res.status(404).json({ message: req.__('variant.variantNotFound') });
     }
     res.json({
-      message: "Variante eliminada",
+      message: req.__('variant.variantDeleted'),
       data: variant
     });
 }

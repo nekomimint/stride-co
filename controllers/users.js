@@ -20,7 +20,7 @@ async function create(req, res, next)
 
 
   // regresamos la respuesta
-  res.status(201).json({message: "usuario creado",data: user });
+  res.status(201).json({message: req.__('user.userCreated'), data: user });
 }
 
 // READ todos
@@ -33,7 +33,7 @@ async function list(req, res, next) {
   // que hicimos en el index, por eso es importante que coincidan.
   const users = await User.findAll({attributes: ['first_name', 'last_name', 'email'], include:{model: Role, as: 'role'}});
   res.json({
-    message: "lista de usuarios",
+    message: req.__('user.findUsers'),
     data: users
   });
 }
@@ -46,13 +46,13 @@ async function find(req, res, next){
   if (!user)
     {
     return res.status(404).json({
-      message: "No se encontro al usuario",
+      message: req.__('user.userNotFound'),
       data: null
     });
   }
 
   res.json({
-    message: "usuario encontrado",
+    message: req.__('user.userFound'),
     data: user
   });
 
@@ -70,7 +70,7 @@ async function update(req, res, next)
   
   if (!user) {
     return res.status(404).json({
-      message: "Usuario no encontrado"
+      message: req.__('user.userNotFound')
     });
   }
 
@@ -86,7 +86,7 @@ async function update(req, res, next)
   await user.update(changes);
   
   res.json({
-    message: "Usuario actualizado",
+    message: req.__('user.userUpdated'),
     data: user
   });
 }
@@ -99,13 +99,13 @@ async function destroy(req, res, next)
 
   if (!user) {
     return res.status(404).json({
-      message: "Usuario no encontrado"
+      message: req.__('user.userNotFound')
     });
   }
   await user.destroy();
 
   res.json({
-    message: "Usuario eliminado",
+    message: req.__('user.userDeleted'),
     data: user
   });
 }

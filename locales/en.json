@@ -29,5 +29,54 @@
 		"orderFound": "Order found",
 		"orderUpdated": "Order updated",
 		"orderDeleted": "Order deleted"
+	},
+
+	"permission": {
+		"permissionCreated": "Permission created succesfully",
+		"findPermissions": "Show permissions that can be granted",
+		"permissionNotFound": "Permission not found",
+		"permissionFound": "Permission found",
+		"permissionUpdated": "Permission updated",
+		"permissionDeleted": "Permission deleted"
+	},
+
+	"product": {
+		"productCreated": "Product created succesfully",
+		"findProducts": "Show product list",
+		"productNotFound": "Product not found",
+		"productFound": "Product found",
+		"productUpdated": "Product updated",
+		"productDeleted": "Product deleted"
+	},
+
+	"role": {
+		"roleCreated": "Role created succesfully",
+		"findRoles": "Show available roles",
+		"roleNotFound": "Role not found",
+		"roleFound": "Role found",
+		"roleUpdated": "Role updated",
+		"roleDeleted": "Role deleted"
+	},
+
+	"user": {
+		"userCreated": "User created succesfully",
+		"findUsers": "Show users",
+		"userNotFound": "User not found",
+		"userFound": "User found",
+		"userUpdated": "User updated",
+		"userDeleted": "User deleted"
+	},
+
+	"variant": {
+		"variantCreated": "Variant created succesfully",
+		"findVariant": "Show product variants",
+		"variantNotFound": "Variant not found",
+		"variantFound": "Variant found",
+		"variantUpdated": "Variant updated",
+		"variantDeleted": "Variant deleted"
+	},
+
+	"index": {
+		"apiWorking": "API working"
 	}
 }
