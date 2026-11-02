@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/permissions');
-const logger = require('../utils/logger');
+const controller = require('../../controllers/permissions');
+const logger = require('../../utils/logger');
 
 const log = (message)=>(req, res, next)=>{
     logger.info(message);

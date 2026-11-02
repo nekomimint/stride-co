@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const logger = require('../utils/logger');
+const logger = require('../../utils/logger');
 
-const controller = require('../controllers/users');
+const controller = require('../../controllers/users');
 
 const log = (message)=>(req, res, next)=>{
     logger.info(message);

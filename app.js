@@ -6,16 +6,19 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const {expressjwt} = require('express-jwt');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const rolesRouter = require('./routes/roles');
-const permissionsRouter = require('./routes/permissions');
-const productsRouter = require('./routes/products');
-const variantsRouter = require('./routes/variants');
-const inventoryRouter = require('./routes/inventory');
-const customersRouter = require('./routes/customers');
-const ordersRouter = require('./routes/orders');
-const authRouter = require('./routes/auth');
+
+var indexRouter = require('./routes/api/index');
+var usersRouter = require('./routes/api/users');
+const rolesRouter = require('./routes/api/roles');
+const permissionsRouter = require('./routes/api/permissions');
+const productsRouter = require('./routes/api/products');
+const variantsRouter = require('./routes/api/variants');
+const inventoryRouter = require('./routes/api/inventory');
+const ordersRouter = require('./routes/api/orders');
+const customersRouter = require('./routes/api/customers');
+const authRouter = require('./routes/api/auth');
+
+const indexWebRouter = require('./routes/web/index');
 
 var app = express();
 
@@ -23,7 +26,8 @@ var app = express();
 // middleware para solicitar el token en cada ruta a excepcion: .unless la ruta del login
 const SECRET_KEY = process.env.SECRET_KEY
 
-app.use(expressjwt({secret: SECRET_KEY, algorithms:["HS256"]}).unless({path:['/api/auth/login']}));
+//app.use(expressjwt({secret: SECRET_KEY, algorithms:["HS256"]}).
+//unless({path:['/api/auth/login', '/health', '/']}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,7 +39,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+
+
+// agregado clase 31/octubre
+// empezamos a separar el api de lo que es la parte de app web
+app.use('/', indexWebRouter);
+app.use('/health',indexRouter);
+
 // agregado en la clase 10/octubre
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
@@ -46,7 +56,6 @@ app.use('/api/variants', variantsRouter);
 app.use('/api/inventory', inventoryRouter);
 app.use('/api/customers', customersRouter);
 app.use('/api/orders', ordersRouter);
-app.use('/', indexRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
