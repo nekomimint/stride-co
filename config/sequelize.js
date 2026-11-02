@@ -19,12 +19,14 @@ const sequelize = new Sequelize(
         //Puerto: El puerto en el que atiende a nuestro servidor de base de datos
         port: Number(mysqlConfig.port),
         // dialect: es la propiedad donde definimos la base de datos especificamente que vamos a usar
-        dialect: 'mysql',
+        // Dialect changed to PostgreSQL due to Render limitations...
+        dialect: 'postgres',
         dialectOptions: {
             ssl: {
                 require:true,
             rejectUnauthorized: false,
-            ca: fs.readFileSync(path.join(__dirname, '../config/ca.pem'))
+            // This is for services that require exchanges secrets to stablish a connection
+            //ca: fs.readFileSync(path.join(__dirname, '../config/ca.pem'))
             }
         },
         logging: false,
