@@ -12,10 +12,10 @@ const INVALID_CREDENTIALS = {message: "Invalid credentials"};
 function signToken(user){
     const jwtUser = {
         // tiempo de expiración
-        expiresIn: config.get('jwtExpires'),
+        expiresIn: config.get('auth.jwtExpires'),
         // la aplicación que lo emite
-        issuer: config.get('jetIssuer'),
-        audience: config.get('jwtAudience'),
+        issuer: config.get('auth.jwtIssuer'),
+        audience: config.get('auth.jwtAudience'),
          // algoritmo a utilizar
         algorithm: "HS256"
 
