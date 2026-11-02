@@ -1,5 +1,33 @@
 {
-    "auth": {
-        "invalidCredentials": "Invalid Credentials"
-    }
+	"auth": {
+		"invalidCredentials": "Invalid Credentials",
+		"loginSuccess": "Login successful"
+	},
+
+	"customers": {
+		"customerCreated": "Client created succesfully",
+		"findCustomers": "Show customer list",
+		"customerNotFound": "Customer not found",
+		"customerFound": "Customer found",
+		"customerUpdated": "Customer updated",
+		"customerDeleted": "Customer deleted"
+	},
+
+    "inventory": {
+		"inventoryCreated": "Product inventory created succesfully",
+		"findInventories": "Show product inventories",
+		"inventoryNotFound": "Product inventory not found",
+		"inventoryFound": "Product inventory found",
+		"inventoryUpdated": "Product inventory updated",
+		"inventoryDeleted": "Product inventory deleted"
+	},
+
+    "order": {
+		"orderCreated": "Order created succesfully",
+		"findOrders": "Show orders",
+		"orderNotFound": "Order not found",
+		"orderFound": "Order found",
+		"orderUpdated": "Order updated",
+		"orderDeleted": "Order deleted"
+	}
 }

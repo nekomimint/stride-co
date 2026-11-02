@@ -1,5 +1,33 @@
 {
-    "auth": {
-        "invalidCredentials": "Credenciales Inválidas"
-    }
+	"auth": {
+		"invalidCredentials": "Credenciales Inválidas",
+		"loginSuccess": "Inicio de sesión exitoso"
+	},
+	"customers": {
+		"customerCreated": "Cliente creado exitosamente",
+		"findCustomers": "Mostrar la lista de clientes",
+		"customerNotFound": "No se encontró al cliente",
+		"customerFound": "Cliente encontrado",
+		"customerUpdated": "Cliente actualizado",
+		"customerDeleted": "Cliente eliminado"
+	},
+
+    "inventory": {
+		"inventoryCreated": "Inventario del producto creado exitosamente",
+		"findInventories": "Lista de inventarios de productos",
+		"inventoryNotFound": "Inventario de producto no encontrado",
+		"inventoryFound": "Inventario de producto encontrado",
+		"inventoryUpdated": "Inventario de producto actualizado",
+		"inventoryDeleted": "Inventario de producto eliminado"
+	},
+
+    "order": {
+		"orderCreated": "Orden creada exitosamente",
+		"findOrders": "Mostrar la lista de órdenes",
+		"orderNotFound": "No se encontró la orden",
+		"orderFound": "Orden encontrada",
+		"orderUpdated": "Orden actualizada",
+		"orderDeleted": "Orden eliminada"
+	}
+	
 }

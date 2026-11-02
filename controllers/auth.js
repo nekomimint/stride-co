@@ -42,7 +42,7 @@ async function login(req, res, next){
     if(!valid) return res.status(401).json({message: req.__('auth.invalidCredentials')});
 
     res.json({
-        message: "Login successful",
+        message: req.__('auth.loginSuccess'), //Lee el logginSuccess del json en locales
         data:{
             token: signToken(user),
             token_type: "Bearer",

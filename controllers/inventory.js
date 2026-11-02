@@ -5,7 +5,7 @@ const { Inventory } = require('../models/documents');
 async function create(req, res, next) {
     const item = await Inventory.create(req.body);
     res.status(201).json({
-      message: "Inventario creado",
+      message: req.__('inventory.inventoryCreated'),
       data: item
     });
 }
@@ -14,7 +14,7 @@ async function create(req, res, next) {
 async function list(req, res, next) {
     const inventory = await Inventory.find();
     res.json({
-      message: "Lista de inventario",
+      message: req.__('inventory.findInventories'),
       data: inventory
     });
 }
@@ -23,10 +23,10 @@ async function list(req, res, next) {
 async function find(req, res, next) {
     const item = await Inventory.findById(req.params.id);
     if (!item) {
-          return res.status(404).json({ message: "Inventario no encontrado" });
+          return res.status(404).json({ message: req.__('inventory.inventoryNotFound')});
         }
         res.json({
-            message: "Inventario por id",
+            message: req.__('inventory.inventoryFound'),
             data: item
         });
 }
@@ -36,10 +36,10 @@ async function update(req, res, next) {
     const item = await Inventory.findByIdAndUpdate(req.params.id, req.body, { new: true });
     // new: rue devuelve el documento ya actualizado
     if (!item) {
-      return res.status(404).json({ message: "Inventario no encontrado" });
+      return res.status(404).json({ message: req.__('inventory.inventoryNotFound') });
     }
     res.json({
-      message: "Inventario actualizado",
+      message: req.__('inventory.inventoryUpdated'),
       data: item
     });
 }
@@ -48,10 +48,10 @@ async function update(req, res, next) {
 async function destroy(req, res, next) {
     const item = await Inventory.findByIdAndDelete(req.params.id);
     if (!item) {
-      return res.status(404).json({ message: "Inventario no encontrado" });
+      return res.status(404).json({ message: req.__('inventory.inventoryNotFound') });
       }
       res.json({
-        message: "Inventario eliminado",
+        message: req.__('inventory.inventoryDeleted'),
         data: item
       });
 }

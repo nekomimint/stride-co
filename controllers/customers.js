@@ -5,7 +5,7 @@ const {Customer} = require('../models/documents');
 async function create(req, res, next) {
     const customer = await Customer.create(req.body);
     res.status(201).json({
-      message: "Cliente creado",
+      message: req.__('customers.customerCreated'),
       data: customer
     });
 } 
@@ -15,7 +15,7 @@ async function create(req, res, next) {
 async function list(req, res, next) {
     const customers = await Customer.find();
     res.json({
-      message: "Lista de clientes",
+      message: req.__('customers.findCustomers'),
       data: customers
     });
 } 
@@ -25,10 +25,10 @@ async function list(req, res, next) {
 async function find(req, res, next) {
     const customer = await Customer.findById(req.params.id);
     if (!customer) {
-      return res.status(404).json({ message: "Cliente no encontrado" });
+      return res.status(404).json({ message: req.__('customers.customerNotFound')});
     }
     res.json({
-      message: "Cliente por id",
+      message: req.__('customers.customerFound'),
       data: customer
     });
 } 
@@ -41,10 +41,10 @@ async function update(req, res, next) {
       { new: true } // Devuelve el documento actualizado
     );
     if (!customer) {
-      return res.status(404).json({ message: "Cliente no encontrado" });
+      return res.status(404).json({ message: req.__('customers.customerNotFound') });
     }
     res.json({
-      message: "Cliente actualizado",
+      message: req.__('customers.customerUpdated'),
       data: customer
     });
 } 
@@ -53,10 +53,10 @@ async function update(req, res, next) {
 async function destroy(req, res, next) {
     const customer = await Customer.findByIdAndDelete(req.params.id);
     if (!customer) {
-      return res.status(404).json({ message: "Cliente no encontrado" });
+      return res.status(404).json({ message: req.__('customers.customerNotFound') });
     }
     res.json({
-      message: "Cliente eliminado",
+      message: req.__('customers.customerDeleted'),
       data: customer
     });
 }
