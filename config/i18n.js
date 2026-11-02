@@ -7,7 +7,7 @@ i18n.configure(
         defaultLocale: 'en',   // si en la cookie del cliente no viene el idioma 
         fallbacks: {
             'es-*': 'es',   // Si se detecta una variación en español cambia directamente al idioma original
-            'en-*': 'en',   Si se detecta una variación en inglés cambia directamente al idioma original
+            'en-*': 'en',   //Si se detecta una variación en inglés cambia directamente al idioma original
         },
         directory: path.join(__dirname, '..', 'locales'), // con la libreria path, junta el directorio donde estamos
         // diferentes formas de indicarle de donde va a sacar el lang

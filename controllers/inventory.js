@@ -1,72 +1,59 @@
-let inventory = [];
-let nextId = 1;
+const { Inventory } = require('../models/documents');
+
 
 // CREATE
-function create(req, res, next) 
-{
-  const { productId, stock } = req.body;
-  const newItem = {
-    id: nextId++,
-    productId: productId || null,
-    stock: stock !== undefined ? stock : 0
-  };
-  inventory.push(newItem);
-
-  res.status(201).json({
-    message: "invetario craedo",
-    data: newItem
-  });
+async function create(req, res, next) {
+    const item = await Inventory.create(req.body);
+    res.status(201).json({
+      message: "Inventario creado",
+      data: item
+    });
 }
 
 // READ todo
-function list(req, res, next) {
-  res.json({
-    message: "Lista de inventario",
-    data: inventory
-  });
+async function list(req, res, next) {
+    const inventory = await Inventory.find();
+    res.json({
+      message: "Lista de inventario",
+      data: inventory
+    });
 }
 
 // READ solo uno
-function find(req, res, next) {
-  const id = +req.params.id;
-  const item = inventory.find(i => i.id === id);
-
-  res.json({
-    message: "Inventario por id",
-    data: item || {}
-  });
+async function find(req, res, next) {
+    const item = await Inventory.findById(req.params.id);
+    if (!item) {
+          return res.status(404).json({ message: "Inventario no encontrado" });
+        }
+        res.json({
+            message: "Inventario por id",
+            data: item
+        });
 }
 
 // UPDATE
-function update(req, res, next) {
-  const id = +req.params.id;
-  const { stock } = req.body;
-  const item = inventory.find(i => i.id === id);
-
-  if (item) {
-    if (stock !== undefined) item.stock = stock;
-  }
-
-  res.json({
-    message: "Inventario actualizado",
-    data: item || {}
-  });
+async function update(req, res, next) {
+    const item = await Inventory.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    // new: rue devuelve el documento ya actualizado
+    if (!item) {
+      return res.status(404).json({ message: "Inventario no encontrado" });
+    }
+    res.json({
+      message: "Inventario actualizado",
+      data: item
+    });
 }
 
 // DELETE
-function destroy(req, res, next) {
-  const id = +req.params.id;
-  const index = inventory.findIndex(i => i.id === id);
-  let deletedItem = {};
-
-  if (index !== -1) {
-    deletedItem = inventory.splice(index, 1)[0];
-  }
-
-  res.json({
-    message: "Inventario eliminado",
-    data: deletedItem
-  });
+async function destroy(req, res, next) {
+    const item = await Inventory.findByIdAndDelete(req.params.id);
+    if (!item) {
+      return res.status(404).json({ message: "Inventario no encontrado" });
+      }
+      res.json({
+        message: "Inventario eliminado",
+        data: item
+      });
 }
 
 module.exports = { create, list, find, update, destroy };
