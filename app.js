@@ -21,12 +21,6 @@ const authRouter = require('./routes/auth');
 
 var app = express();
 
-// Agregado clase 17/octubre
-// middleware para solicitar el token en cada ruta a excepcion: .unless la ruta del login
-const SECRET_KEY = process.env.SECRET_KEY
-
-app.use(expressjwt({secret: SECRET_KEY, algorithms:["HS256"]}).unless({path:['/api/auth/login']}));
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -40,7 +34,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 // tiene que ser en este punto para que haya pasado primero por cookieParser()
 // inyecta el objeto i18n para poder usarl EN CADA CONTROLADOR
 // a esto se le llama inyeccion de dependencias
-app.use(i18n.init)
+app.use(i18n.init);
+ 
+// Le pasa el idioma a las vistas 
+app.use((req, res, next) => {
+  res.locals.locale = req.getLocale();
+  next();
+});
+
+// Agregado clase 17/octubre
+// middleware para solicitar el token en cada ruta a excepcion: .unless la ruta del login
+const SECRET_KEY = process.env.SECRET_KEY
+
+app.use(expressjwt({secret: SECRET_KEY, algorithms:["HS256"]}).unless({path:['/api/auth/login']}));
+
 
 app.use('/', indexRouter);
 // agregado en la clase 10/octubre
@@ -62,7 +69,8 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
+  res.locals.message = 
+    err.name === "UnautorizedError" ? req.__("auth.unauthorized") : err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page

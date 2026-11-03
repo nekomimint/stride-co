@@ -1,7 +1,8 @@
 {
 	"auth": {
 		"invalidCredentials": "Invalid Credentials",
-		"loginSuccess": "Login successful"
+		"loginSuccess": "Login successful",
+		"unauthorized": "Unauthorized"
 	},
 
 	"customers": {
@@ -77,6 +78,15 @@
 	},
 
 	"index": {
-		"apiWorking": "API working"
+		"apiWorking": "API working",
+		"welcome": "Welcome to %s"
+	},
+
+	"layout": {
+		"defaultTitle": "My API"
+	},
+
+	"error": {
+		"statusLabel": "Status: %s"
 	}
 }

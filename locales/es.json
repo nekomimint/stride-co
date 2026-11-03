@@ -1,7 +1,8 @@
 {
 	"auth": {
 		"invalidCredentials": "Credenciales Inválidas",
-		"loginSuccess": "Inicio de sesión exitoso"
+		"loginSuccess": "Inicio de sesión exitoso",
+		"unauthorized": "No autorizado"
 	},
 	"customers": {
 		"customerCreated": "Cliente creado exitosamente",
@@ -75,7 +76,16 @@
 	},
 
 	"index": {
-		"apiWorking": "API funcionando"
+		"apiWorking": "API funcionando",
+		"welcome": "Bienvenido a %s"
+	},
+
+	"layout": {
+		"defaultTitle": "Mi API"
+	},
+
+	"error": {
+		"statusLabel": "Estado: %s"
 	}
 	
 }
