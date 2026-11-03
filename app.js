@@ -66,15 +66,28 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// error handler (cambiado para soportar traducciones de errores)
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = 
-    err.name === "UnautorizedError" ? req.__("auth.unauthorized") : err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  const status = err.status || 500;
 
+  if (err.name === 'UnauthorizedError'){
+    res.locals.message = req.__("auth.unauthorized"); // Error 401
+  } else if (status === 403) {
+    res.locals.message = req.__("errors.forbidden"); // Error 403
+  } else if (status === 404) {
+    res.locals.message = req.__("errors.notFound"); // Error 404
+  } else if (status === 500) {
+    res.locals.message = req.__("errors.internal"); // Error 500
+  } else {
+    res.locals.message = err.message;
+  }
+  
+  
+  res.locals.status = status;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
   // render the error page
-  res.status(err.status || 500);
+  res.status(status);
   res.render('error');
 });
 

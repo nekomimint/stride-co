@@ -75,6 +75,10 @@
 		"variantDeleted": "Variante eliminada"
 	},
 
+	"error": {
+		"statusLabel": "Estado: %s"
+	},
+
 	"index": {
 		"apiWorking": "API funcionando",
 		"welcome": "Bienvenido a %s"
@@ -84,8 +88,10 @@
 		"defaultTitle": "Mi API"
 	},
 
-	"error": {
-		"statusLabel": "Estado: %s"
+	"errors": {
+		"notFound": "No encontrado",
+		"forbidden": "Acceso denegado",
+		"internal": "Error interno del servidor"
 	}
 	
 }
