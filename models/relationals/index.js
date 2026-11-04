@@ -48,5 +48,23 @@ User.belongsTo(Role, {foreignKey: 'role_id', as: 'role'})
         timestamps: false
     })
 
+// ###########################################################################################
+// PARA CREAR LA RELACION ENTRE LOS PRODUCTOS Y SUS VARIANTES:
+
+const Product = require('./Product');
+const ProductVariant = require('./ProductVariant');
+
+
+Product.hasMany(ProductVariant, {
+  foreignKey: 'product_id',
+  as: 'variants'
+});
+
+// ProductVariant -> Product
+ProductVariant.belongsTo(Product, {
+  foreignKey: 'product_id',
+  as: 'product'
+});
+
 
 module.exports = {sequelize, User, Role, Permission};

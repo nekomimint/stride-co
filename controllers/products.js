@@ -1,74 +1,59 @@
-let products = [];
-let nextId = 1;
+const Product = require("../models/relationals/Product");
+const ProductVariant = require("../models/relationals/ProductVariant");
 
-// CREATE
-function create(req, res, next) {
-  const { name, price } = req.body;
-  const newProduct = {
-    id: nextId++,
-    // || si es null nos va a a regresar: "producto sin nombre"
-    name: name || "Producto sin nombre",
-    price: price || 0
-  };
-  products.push(newProduct);
-
-  res.status(201).json({
-    message: "Producto creado",
-    data: newProduct
-  });
+// list
+async function list(req, res, next) {
+    try {
+        const products = await Product.findAll({ include: { model: ProductVariant, as: 'variants' } });
+        res.json({ message: 'Products listed', data: products });
+    } catch (err) {
+        next(err);
+    }
 }
 
-// READ toda la lista
-function list(req, res, next) {
-  res.json({
-    message: "Lista de productos",
-    data: products
-  });
+// find
+async function find(req, res, next) {
+    try {
+        const product = await Product.findByPk(req.params.id, { include: { model: ProductVariant, as: 'variants' } });
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+        res.json({ message: 'Product found', data: product });
+    } catch (err) {
+        next(err);
+    }
 }
 
-// READ solo 1
-function find(req, res, next) {
-  const id = +req.params.id;
-  const product = products.find(p => p.id === id);
-
-  res.json({
-    message: "Product by id",
-    data: product || {}
-  });
+// create
+async function create(req, res, next) {
+    try {
+        const product = await Product.create(req.body);
+        res.status(201).json({ message: 'Product created', data: product });
+    } catch (err) {
+        next(err);
+    }
 }
 
-// UPDATE
-function update(req, res, next) 
-{
-  const id = +req.params.id;
-  const { name, price } = req.body;
-  const product = products.find(p => p.id === id);
-
-  if (product) {
-    if (name !== undefined) product.name = name;
-    if (price !== undefined) product.price = price;
-  }
-
-  res.json({
-    message: "producto actualizado",
-    data: product || {}
-  });
+// update
+async function update(req, res, next) {
+    try {
+        const product = await Product.findByPk(req.params.id);
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+        await product.update(req.body);
+        res.json({ message: 'Product updated', data: product });
+    } catch (err) {
+        next(err);
+    }
 }
 
-// DELETE
-function destroy(req, res, next) {
-  const id = +req.params.id;
-  const index = products.findIndex(p => p.id === id);
-  let deletedProduct = {};
-
-  if (index !== -1) {
-    deletedProduct = products.splice(index, 1)[0];
-  }
-
-  res.json({
-    message: "producto eliminado",
-    data: deletedProduct
-  });
+// destroy
+async function destroy(req, res, next) {
+    try {
+        const product = await Product.findByPk(req.params.id);
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+        await product.destroy();
+        res.json({ message: 'Product deleted' });
+    } catch (err) {
+        next(err);
+    }
 }
 
 module.exports = { create, list, find, update, destroy };
