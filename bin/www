@@ -38,7 +38,7 @@ async function start()
   // con las tablas de las bases de datos, de tal forma que si no coinciden trata de modificar
   // las tablas para que coincidan con lo establecido.
 
-  await sequelize.sync({ });
+  await sequelize.sync({alter: true});
   debug('conexion a mysql generada correctamente.');
 
   //Agregado 03/10 para conectar mongodb
