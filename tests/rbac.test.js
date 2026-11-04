@@ -1,6 +1,6 @@
-//Creamos los roles falsos para el test
-//Se necesita actualizar node a la versión 24.9 y usar el comando "npm i accesscontrol@2.2.1"
-jest.mock('../models/relationals', () =>{
+// Creamos los roles falsos para el test
+// Se necesita actualizar node a la versión 24.9 y usar el comando "npm i accesscontrol@2.2.1"
+jest.mock('../models/relationals', () => {
     const roles = [
         {name: 'ADMIN', permissions: [{key: 'orders:delete:any'}]},
         {name: 'SALES', permissions: [{key: 'orders:read:any'}]},
@@ -16,23 +16,31 @@ jest.mock('../models/relationals', () =>{
     };
 });
 
-//Modelo de ordenes falso para el controlador
-jest.mock('../models/documents', () =>({
-    Order: {findByPk: jest.fn()},
+// Modelos falsos para el controlador (Order y Customer)
+jest.mock('../models/documents', () => ({
+    Order: {
+        findByPk: jest.fn(),
+        findById: jest.fn()
+    },
+    Customer: {
+        findOne: jest.fn()
+    }
 }));
 
-//Definir el conjunto de pruebas
+
+// Definir el conjunto de pruebas
 describe('authorize (RBAC)', () => {
-    let authorize, ordersController, Order, req, res, next, logSpy;
+    let authorize, ordersController, Order, Customer, req, res, next, logSpy;
 
     beforeEach(() => {
-        //Reiniciar el cache de pruebas para mantenerlas aisladas
-        jest.resetModules()
+        // Reiniciar el cache de pruebas para mantenerlas aisladas
+        jest.resetModules();
         authorize = require('../middlewares/authorize');
         ordersController = require('../controllers/orders');
         Order = require('../models/documents').Order;
+        Customer = require('../models/documents').Customer;
 
-        //Objetos de request, response y next
+        // Objetos de request, response y next
         req = {params: {}, body: {}, user: {}};
         res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
         next = jest.fn();
@@ -52,7 +60,7 @@ describe('authorize (RBAC)', () => {
 
     test('Acceso denegado', async () => {
         req.user = {role: 'SALES'};
-        //Espera autorización con el rol
+        // Espera autorización con el rol
         await authorize('orders', 'delete', 'any')(req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(403);
@@ -60,7 +68,7 @@ describe('authorize (RBAC)', () => {
     });
 
     test('Recurso propio', async () => {
-        req.user = {id:7, role: 'USER'};
+        req.user = {id: 7, role: 'USER'};
 
         await authorize('orders', 'read', 'own')(req, res, next);
 
@@ -69,18 +77,34 @@ describe('authorize (RBAC)', () => {
     });
 
     test('Recurso de otro usuario', async () => {
-        req.user = {id:7, role: 'USER'};
+        const customReq = {
+            user: { id: 7, role: 'USER' },
+            auth: { sub: 'customer-id-7' },
+            params: { id: '1' }
+        };
 
-        await authorize('orders', 'read', 'own')(req, res, next);
-        expect(next).toHaveBeenCalled();
+        const customRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+        
+        const customNext = jest.fn();
 
-        //El controlador rechaza porque la orden es de otro usuario
-        Order.findByPk.mockResolvedValue({id: 1, userId: 99});
-        req.params = {id: '1'}
+        // Ejecutamos el middleware authorize primero
+        await authorize('orders', 'read', 'own')(customReq, customRes, customNext);
 
-        await ordersController.find(req, res);
+        // Mock de la orden (pertenece a otro customerId)
+        Order.findById.mockResolvedValue({ id: 1, customerId: 'customer-id-99' });
 
-        expect(res.status).toHaveBeenCalledWith(403);
+        // Mock de Customer para que devuelva el cliente del token
+        Customer.findOne.mockResolvedValue({ _id: 'customer-id-7' });
+
+        // Ejecutamos el controlador pasando los objetos personalizados
+        await ordersController.find(customReq, customRes, customNext);
+
+        // Verificamos que responda con 403 porque los IDs no coinciden
+        expect(customRes.status).toHaveBeenCalledWith(403);
+        expect(customRes.json).toHaveBeenCalledWith({ message: 'La orden no pertenece al usuario actual' });
     });
 
     test('Permiso any no asignado', async () => {
@@ -91,5 +115,4 @@ describe('authorize (RBAC)', () => {
         expect(res.status).toHaveBeenCalledWith(403);
         expect(next).not.toHaveBeenCalled();
     });
-
 });
