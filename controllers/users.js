@@ -2,12 +2,17 @@ const User = require('../models/relationals/User');
 const Role = require("../models/relationals/Role");
 const {hashPassword} = require('../utils/password')
 
-// otra opcion es 
-// const Role = require('../models/relationals');
-
+// Devuelve true si el usuario tiene permiso 'any' o si es el dueño del recurso.
+// Es síncrona: solo compara el sub del token con el id del usuario que se quiere tocar.
+function canAccess(req, resourceId) {
+  if (req.canAny) {
+    return true;
+  }
+  return String(req.auth?.sub) === String(resourceId);
+}
 
 // CREATE
-async function create(req, res, next) 
+async function create(req, res, next)
 {
   const name = req.body.name;
   const lastName = req.body.lastName;
@@ -16,11 +21,9 @@ async function create(req, res, next)
   const password = req.body.password;
   const passwordData = await hashPassword(password);
   const user = await User.create({first_name:name, last_name:lastName,
-  email:email, role_id: roleId, password: passwordData.securePassword, salt_key: passwordData.saltKey}); 
+  email:email, role_id: roleId, password: passwordData.securePassword, salt_key: passwordData.saltKey});
 
-
-  // regresamos la respuesta
-  res.status(201).json({message: "usuario creado",data: user });
+  res.status(201).json({message: "usuario creado", data: user });
 }
 
 // READ todos
@@ -41,10 +44,15 @@ async function list(req, res, next) {
 // READ por id
 async function find(req, res, next){
   const id = req.params.id;
+
+  if (!canAccess(req, id)) {
+    return res.status(403).json({ message: 'No puedes acceder a este usuario' });
+  }
+
   const user = await User.findByPk(id, {include:{model: Role, as: 'role'}});
 
   if (!user)
-    {
+  {
     return res.status(404).json({
       message: "No se encontro al usuario",
       data: null
@@ -55,19 +63,22 @@ async function find(req, res, next){
     message: "usuario encontrado",
     data: user
   });
-
 }
 
 // UPDATE
 async function update(req, res, next)
- {
+{
   const id = req.params.id;
+
+  if (!canAccess(req, id)) {
+    return res.status(403).json({ message: 'No puedes modificar este usuario' });
+  }
+
   const name = req.body.name;
   const lastName = req.body.lastName;
   const email = req.body.email;
   const user = await User.findByPk(id);
   const roleId = req.body.roleId;
-  
   if (!user) {
     return res.status(404).json({
       message: "Usuario no encontrado"
@@ -80,11 +91,9 @@ async function update(req, res, next)
   changes.first_name = name ? name : user.first_name;
   changes.last_name = lastName ? lastName : user.last_name;
   changes.email = email ? email : user.email;
-  changes.role_id = roleId ? roleId: user.role_id; 
-
+  changes.role_id = roleId ? roleId: user.role_id;
 
   await user.update(changes);
-  
   res.json({
     message: "Usuario actualizado",
     data: user
@@ -92,9 +101,14 @@ async function update(req, res, next)
 }
 
 // DELETE
-async function destroy(req, res, next) 
+async function destroy(req, res, next)
 {
   const id = req.params.id;
+
+  if (!canAccess(req, id)) {
+    return res.status(403).json({ message: 'No puedes eliminar este usuario' });
+  }
+
   const user = await User.findByPk(id);
 
   if (!user) {
@@ -111,3 +125,12 @@ async function destroy(req, res, next)
 }
 
 module.exports = { create, list, find, update, destroy };
+
+
+
+
+
+
+
+
+
