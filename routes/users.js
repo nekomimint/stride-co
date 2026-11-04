@@ -26,8 +26,7 @@ router.put('/:id', authorize('users', 'update', 'own'), log('Updating user'), co
 // /* DELETE user by id (DELETE ANY) */
 router.delete('/:id', authorize('users', 'delete', 'any'), log('Deleting user'), controller.destroy);
 
-
-
+//para hacer las pruebas quito el middleware:
 // router.post('/', log('Creating user'), controller.create);
 
 // /* GET users listing (READ ANY - Ver todos los usuarios) */
