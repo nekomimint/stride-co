@@ -1,92 +1,127 @@
-"Este es nuestro arreglo local"
-let variants = [];
-let nextId = 1;
+const Product = require("../models/relationals/Product");
+const ProductVariant = require("../models/relationals/ProductVariant");
 
-// CREATE
-function create(req, res, next) 
-{
-    // recogemos los valores de prueba del cuerpo del request
-  const { sku, color } = req.body;
-
-  const newVariant = 
-  {
-    id: nextId++,
-    sku: sku,
-    color: color
-  };
-
-  variants.push(newVariant);
-
-  res.status(201).json(
-    {
-    message: "Variant created",
-    data: newVariant
-  });
-}
-
-// READ ALL
-function list(req, res, next) {
-  res.json({
-    message: "Lista de variantes",
-    // solo regresamos la lista
-    data: variants     
-  });
-}
-
-// READ ONE BY ID
-function find(req, res, next) 
-{
-  const id = +req.params.id;
-  const variant = variants.find(v => v.id === id);
-
-  res.json({
-    message: "Variant by id",
-    data: variant || {}
-  });
-
-
-}
-
-// UPDATE
-function update(req, res, next) 
-{
-  const id = +req.params.id;
-  const { sku, color } = req.body;
-  const variant = variants.find(v => v.id === id);
-
-  // si existe el elemento a actualizar
-  if (variant) 
- {
-    // actualizamos la propiedad que este definida, las dos o uno o ninguna
-    if (sku !== undefined) variant.sku = sku;
-    if (color !== undefined) variant.color = color;
+// list
+async function list(req, res, next) {
+  try {
+    const variants = await ProductVariant.findAll({
+      include: { model: Product, as: 'product' }
+    });
+    res.json({ message: 'Variants listed', data: variants });
+  } catch (err) {
+    next(err);
   }
-
-  res.json({
-    message: "Variant updated",
-    data: variant || {}
-  });
 }
 
-// DELETE
-function destroy(req, res, next) 
-{
-  const id = +req.params.id;
-  const index = variants.findIndex(v => v.id === id);
-  let deletedVariant = {};
-
-  // si existe
-  if (index !== -1) 
-  {
-    // lo eliminamos
-    deletedVariant = variants.splice(index, 1)[0];
+// find
+async function find(req, res, next) {
+  try {
+    const variant = await ProductVariant.findByPk(req.params.id, {
+      include: { model: Product, as: 'product' }
+    });
+    if (!variant) return res.status(404).json({ message: 'Variant not found' });
+    res.json({ message: 'Variant found', data: variant });
+  } catch (err) {
+    next(err);
   }
+}
 
-  // y regresamos justo lo que acabamos de eliminar
-  res.json({
-    message: "Variant deleted",
-    data: deletedVariant
-  });
+// create
+async function create(req, res, next) {
+  try {
+    const variant = await ProductVariant.create(req.body);
+    res.status(201).json({ message: 'Variant created', data: variant });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// update
+async function update(req, res, next) {
+  try {
+    const variant = await ProductVariant.findByPk(req.params.id);
+    if (!variant) return res.status(404).json({ message: 'Variant not found' });
+    await variant.update(req.body);
+    res.json({ message: 'Variant updated', data: variant });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// destroy
+async function destroy(req, res, next) {
+  try {
+    const variant = await ProductVariant.findByPk(req.params.id);
+    if (!variant) return res.status(404).json({ message: 'Variant not found' });
+    await variant.destroy();
+    res.json({ message: 'Variant deleted' });
+  } catch (err) {
+    next(err);
+  }
 }
 
 module.exports = { create, list, find, update, destroy };
+
+
+
+
+
+// Esto estaba como modelo documental
+// era con el modelo relacional:
+/* const { Variant } = require('../models/documents');
+
+// CREATE
+async function create(req, res, next) {
+    const variant = await Variant.create(req.body);
+    res.status(201).json({
+      message: "Variante creada",
+      data: variant
+    });
+}
+
+// READ toda la lista
+async function list(req, res, next) {
+    const variants = await Variant.find();
+    res.json({
+      message: "Lista de variantes",
+      data: variants
+    });
+}
+
+// READ solo una por ID
+async function find(req, res, next) {
+    const variant = await Variant.findById(req.params.id);
+    if (!variant) {
+      return res.status(404).json({ message: "Variante no encontrada" });
+      }
+      res.json({
+        message: "Variante por id",
+        data: variant
+      });
+}
+
+// UPDATE
+async function update(req, res, next) {
+    const variant = await Variant.findByIdAndUpdate( req.params.id, req.body, { new: true } );
+    if (!variant) {
+      return res.status(404).json({ message: "Variante no encontrada" });
+    }
+    res.json({
+      message: "Variante actualizada",
+      data: variant
+    });
+}
+
+// DELETE
+async function destroy(req, res, next) {
+    const variant = await Variant.findByIdAndDelete(req.params.id);
+    if (!variant) {
+      return res.status(404).json({ message: "Variante no encontrada" });
+    }
+    res.json({
+      message: "Variante eliminada",
+      data: variant
+    });
+}
+
+module.exports = { create, list, find, update, destroy }; */

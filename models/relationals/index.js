@@ -67,4 +67,23 @@ ProductVariant.belongsTo(Product, {
 });
 
 
+// ###########################################################################################
+// Para crear la relación entre las variantes de los productos y el inventario
+
+const Inventory = require('./Inventory');
+
+// ProductVariant -> Inventory (1 a 1)
+ProductVariant.hasOne(Inventory, {
+  // aqui es cuando se inyecta, por asi decirlo, el campo variant_id
+  // por eso no esta definido dentro de Invetnory.js
+  foreignKey: { name: 'variant_id', allowNull: false, unique: true }, // muy imporante el unique
+  as: 'inventory'
+});
+
+// Inventory -> ProductVariant
+Inventory.belongsTo(ProductVariant, {
+  foreignKey: { name: 'variant_id', allowNull: false, unique: true },
+  as: 'variant'
+});
+
 module.exports = {sequelize, User, Role, Permission};
