@@ -12,7 +12,8 @@ const log = (message)=>(req, res, next)=>{
 };
 
 /* POST order create (CREATE ANY) */
-router.post('/', authorize('orders', 'create', 'any'), log('Creating order'), controller.create);
+// un usuario puede crear sus propias ordenes: own
+router.post('/', authorize('orders', 'create', 'own'), log('Creating order'), controller.create);
 
 /* GET order listing (READ ANY - Ver todas las órdenes) */
 router.get('/', authorize('orders', 'read', 'any'), log('Listing orders'), controller.list);

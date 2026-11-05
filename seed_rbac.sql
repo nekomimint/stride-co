@@ -18,11 +18,11 @@ INSERT INTO permissions (`key`, description, created_at, updated_at) VALUES
 ('products:delete:any', 'Eliminar productos', NOW(), NOW()),
 
 -- ÓRDENES
-('orders:create:any', 'Crear órdenes para cualquier cliente', NOW(), NOW()),
-('orders:create:own', 'Crear órdenes propias', NOW(), NOW()),
-('orders:read:own', 'Ver órdenes propias', NOW(), NOW()),
-('orders:read:any', 'Ver todas las órdenes', NOW(), NOW()),
-('orders:update:own', 'Editar órdenes propias', NOW(), NOW()),
+('orders:create:any', 'Crear ordenes para cualquier cliente', NOW(), NOW()),
+('orders:create:own', 'Crear ordenes propias', NOW(), NOW()),
+('orders:read:own', 'Ver ordenes propias', NOW(), NOW()),
+('orders:read:any', 'Ver todas las ordenes', NOW(), NOW()),
+('orders:update:own', 'Editar ordenes propias', NOW(), NOW()),
 
 -- USUARIOS
 ('users:create:any', 'Crear usuarios', NOW(), NOW()),
