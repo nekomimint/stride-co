@@ -6,6 +6,7 @@
     "start": "node ./bin/www",
     "dev": "supervisor ./bin/www",
     "test": "jest",
+    "test:e2e": "jest tests/e2e",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "jest": "^30.5.2",
+    "supertest": "^7.3.1",
     "supervisor": "^0.12.0"
   }
 }
