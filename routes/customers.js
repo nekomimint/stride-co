@@ -4,24 +4,26 @@ const logger = require('../utils/logger');
 
 const controller = require('../controllers/customers');
 
+const authorize = require('../middlewares/authorize');
+
 const log = (message)=>(req, res, next)=>{
     logger.info(message);
-    next();
+next();
 };
 
-/* POST customers create*/
-router.post('/', log('Creating customer'), controller.create);
+//POST customers create (CREATE ANY - Admin y sales) 
+router.post('/', authorize('customers', 'create', 'any'), log('Creating customer'), controller.create);
 
-/* GET costumers listing. */
-router.get('/', log('Listing customers'), controller.list);
+// GET customers listing (READ ANY - Admin y sales)
+router.get('/', authorize('customers', 'read', 'any'), log('Listing customers'), controller.list);
 
-/*GEt costumers by id */
-router.get('/:id', log('Searching customer by id'), controller.find);
+//GET customers by id (READ OWN - Ver cliente propio) 
+router.get('/:id', authorize('customers', 'read', 'own'), log('Searching customer by id'), controller.find);
 
-/*Put customers to update */
-router.put('/:id', log('Updating customer}'), controller.update);
+// PUT customers to update (UPDATE OWN - Editar cliente propio)
+router.put('/:id', authorize('customers', 'update', 'own'), log('Updating customer'), controller.update);
 
-/*DELETE customers by id*/
-router.delete('/:id', log('Deleting customer'), controller.destroy);
+// DELETE customers by id (DELETE ANY - Solo admin) 
+router.delete('/:id', authorize('customers', 'delete', 'any'), log('Deleting customer'), controller.destroy);
 
 module.exports = router;
