@@ -206,21 +206,46 @@ Los permisos siguen una estructura sencilla que consta de tres partes separadas 
 
 ### Matriz RBAC
 
-| Permiso (`Permission.key`) | Descripción | Admin | Sales  | User  |
+| Permiso (`Permission.key`) | Descripción | Admin | Sales | User |
 | :--- | :--- | :---: | :---: | :---: |
 | **`products:create:any`** | Crear productos | Sí | - | - |
-| **`products:read:any`** | Ver productos | Sí | Sí | - |
+| **`products:read:any`** | Ver productos | Sí | Sí | Sí |
 | **`products:update:any`** | Editar productos | Sí | - | - |
 | **`products:delete:any`** | Eliminar productos | Sí | - | - |
-| **`orders:create:any`** | Crear órdenes | Sí | Sí | Sí |
+| **`orders:create:any`** | Crear órdenes para cualquiera | Sí | Sí | - |
+| **`orders:create:own`** | Crear órdenes propias | Sí | - | Sí |
 | **`orders:read:own`** | Ver órdenes propias | Sí | Sí | Sí |
 | **`orders:read:any`** | Ver todas las órdenes | Sí | Sí | - |
-| **`orders:update:own`** | Editar órdenes propias | Sí | - | Sí |
-| **`users:read:any`** | Ver usuarios | Sí | - | - |
-| **`users:update:any`** | Editar usuarios | Sí | - | - |
+| **`orders:update:own`** | Editar órdenes propias | Sí | Sí | Sí |
+| **`users:create:any`** | Crear usuarios | Sí | - | - |
+| **`users:read:any`** | Ver todos los usuarios | Sí | - | - |
+| **`users:read:own`** | Ver perfil propio | Sí | Sí | Sí |
+| **`users:update:any`** | Editar cualquier usuario | Sí | - | - |
+| **`users:update:own`** | Editar perfil propio | Sí | Sí | Sí |
+| **`users:delete:any`** | Eliminar usuarios | Sí | - | - |
+| **`variants:read:any`** | Ver variantes | Sí | Sí | Sí |
+| **`variants:create:any`** | Crear variantes | Sí | - | - |
+| **`variants:update:any`** | Editar variantes | Sí | - | - |
+| **`variants:delete:any`** | Eliminar variantes | Sí | - | - |
+| **`inventory:read:any`** | Ver inventario | Sí | Sí | - |
+| **`inventory:create:any`** | Crear inventario | Sí | - | - |
+| **`inventory:update:any`** | Editar inventario | Sí | - | - |
+| **`inventory:delete:any`** | Eliminar inventario | Sí | - | - |
+| **`customers:create:any`** | Crear clientes | Sí | Sí | - |
+| **`customers:read:any`** | Ver todos los clientes | Sí | Sí | - |
+| **`customers:read:own`** | Ver cliente propio | Sí | Sí | Sí |
+| **`customers:update:any`** | Editar cualquier cliente | Sí | Sí | - |
+| **`customers:update:own`** | Editar cliente propio | Sí | Sí | Sí |
+| **`customers:delete:any`** | Eliminar clientes | Sí | - | - |
+| **`roles:read:any`** | Ver roles | Sí | - | - |
+| **`roles:manage:any`** | Gestionar roles (crear, editar, eliminar) | Sí | - | - |
+| **`roles:assign:any`** | Asignar roles a usuarios | Sí | - | - |
+| **`permissions:read:any`** | Ver permisos | Sí | - | - |
+| **`permissions:manage:any`** | Gestionar permisos | Sí | - | - |
+
 
 ### Enpoints protegidos
-`productos`, `orders` y `users`
+`productos`, `orders` `users` `variants`, `inventory`, `customers`, `roles`, `permissions`
 
 ### Ejemplo de permiso any
 
