@@ -13,7 +13,7 @@ async function create(req, res, next)
 
     // asignamos los permisos
     if(req.body.permissionsIdS) await role.setPermissions(req.body.permissionsIdS);
-    res.status(201).json({message: 'Role created'  , data: role})
+    res.status(201).json({message: req.__('role.roleCreated')  , data: role})
   }
   catch(err)
   {
@@ -26,7 +26,7 @@ async function create(req, res, next)
 async function list(req, res, next) 
 {
   const roles = await Role.findAll({include: {model:Permission, as: 'permissions'}});
-  res.json({message: "Lista de roles", data: roles});
+  res.json({message: req.__('role.findRoles'), data: roles});
 }
 
 // READ por id
@@ -36,13 +36,13 @@ async function find(req, res, next) {
 
   if (!role) {
     return res.status(404).json({
-      message: "No se encontro el rol",
+      message: req.__('role.roleNotFound'),
       data: null
     });
   }
 
   res.json({
-    message: "Rol encontrado",
+    message: req.__('role.roleFound'),
     data: role
   });
 }
@@ -56,7 +56,7 @@ async function update(req, res, next) {
 
   if (!role) {
     return res.status(404).json({
-      message: "Rol no encontrado"
+      message: req.__('role.roleNotFound')
     });
   }
 
@@ -69,7 +69,7 @@ async function update(req, res, next) {
   await role.update(changes);
 
   res.json({
-    message: "Rol actualizado",
+    message: req.__('role.roleUpdated'),
     data: role
   });
 }
@@ -81,14 +81,14 @@ async function destroy(req, res, next) {
 
   if (!role) {
     return res.status(404).json({
-      message: "Rol no encontrado"
+      message: req.__('role.roleNotFound')
     });
   }
 
   await role.destroy();
 
   res.json({
-    message: "Rol eliminado",
+    message: req.__('role.roleDeleted'),
     data: role
   });
 }

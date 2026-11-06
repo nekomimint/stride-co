@@ -11,14 +11,14 @@ async function create(req, res, next)
   const permission = await Permission.create({key:key, description:description});
 
   // regresamos la respuesta
-  res.status(201).json({message: "permiso creado", data: permission });
+  res.status(201).json({message: req.__('permission.permissionCreated'), data: permission });
 }
 
 // READ toda la lista
 async function list(req, res, next) {
   const permissions = await Permission.findAll();
   res.json({
-    message: "lista de permisos",
+    message: req.__('permission.findPermissions'),
     data: permissions
   });
 }
@@ -31,13 +31,13 @@ async function find(req, res, next){
   if (!permission)
     {
     return res.status(404).json({
-      message: "No se encontro el permiso",
+      message: req.__('permission.permissionNotFound'),
       data: null
     });
   }
 
   res.json({
-    message: "permiso encontrado",
+    message: req.__('permission.permissionFound'),
     data: permission
   });
 
@@ -53,7 +53,7 @@ async function update(req, res, next)
   
   if (!permission) {
     return res.status(404).json({
-      message: "Permiso no encontrado"
+      message: req.__('permission.permissionNotFound')
     });
   }
 
@@ -66,7 +66,7 @@ async function update(req, res, next)
   await permission.update(changes);
   
   res.json({
-    message: "Permiso actualizado",
+    message: req.__('permission.permissionUpdated'),
     data: permission
   });
 }
@@ -79,13 +79,13 @@ async function destroy(req, res, next)
 
   if (!permission) {
     return res.status(404).json({
-      message: "Permiso no encontrado"
+      message: req.__('permission.permissionNotFound')
     });
   }
   await permission.destroy();
 
   res.json({
-    message: "Permiso eliminado",
+    message: req.__('permission.permissionDeleted'),
     data: permission
   });
 }

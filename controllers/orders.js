@@ -6,7 +6,7 @@ const {Order} = require('../models/documents');
 async function create(req, res, next) {
     const order = await Order.create(req.body);
     res.status(201).json({
-      message: "Orden creada",
+      message: req.__('order.orderCreated'),
       data: order
     });
 }
@@ -15,58 +15,79 @@ async function create(req, res, next) {
 async function list(req, res, next) {
     const orders = await Order.find();
     res.json({
-      message: "Lista de ordenes",
+      message: req.__('order.findOrders'),
       data: orders
     });
 }
 
 // READ solo uno
-function find(req, res, next) {
-  const id = +req.params.id;
-  const order = orders.find(o => o.id === id);
+async function find(req, res, next) {
+  const order = await Order.findById(req.params.id);
+  if (!order) {
+    return res.status(404).json({ message: req.__('order.orderNotFound')});
+  }
 
   res.json({
-    message: "Orden por id",
-    data: order || {}
+    message: req.__('order.orderFound'),
+    data: order
   });
 }
 
 // UPDATE
-function update(req, res, next) {
-  const id = +req.params.id;
+async function update(req, res, next) {
   const { status, total } = req.body;
-  const order = orders.find(o => o.id === id);
+  const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true } // Devuelve el documento actualizado
+  );
 
-  if (order) {
-    if (status !== undefined) order.status = status;
-    if (total !== undefined) order.total = total;
+  if (!order) {
+      return res.status(404).json({ message: req.__('order.orderNotFound') });
   }
 
   res.json({
-    message: "Orden actualizada",
-    data: order || {}
+    message: req.__('order.orderUpdated'),
+    data: order
   });
 }
 
 // DELETE
 
-// no podemos eliminar solamente cambiar de estado
-// y para eso ya existe el update
+async function destroy(req, res, next) {
+    const order = await Order.findByIdAndDelete(req.params.id);
 
-
-function destroy(req, res, next) {
-  const id = +req.params.id;
-  const index = orders.findIndex(o => o.id === id);
-  let deletedOrder = {};
-
-  if (index !== -1) {
-    deletedOrder = orders.splice(index, 1)[0];
+    if (!order) {
+      return res.status(404).json({ message: req.__('order.orderNotFound') });
+    }
+    res.json({
+      message: req.__('order.orderDeleted'),
+      data: order
+    });
   }
 
-  res.json({
-    message: "Orden eliminada",
-    data: deletedOrder
-  });
-}
+
+// NOTA DE ALAN: Este delete de acá abajo lo dejo comentado por lo que dicen sus comentarios, pero hice uno nuevo para poder hacer las pruebas de la traducción
+
+/*
+  // no podemos eliminar solamente cambiar de estado
+  // y para eso ya existe el update
+
+
+  function destroy(req, res, next) {
+    const id = +req.params.id;
+    const index = orders.findIndex(o => o.id === id);
+    let deletedOrder = {};
+
+    if (index !== -1) {
+      deletedOrder = orders.splice(index, 1)[0];
+    }
+
+    res.json({
+      message: "Orden eliminada",
+      data: deletedOrder
+    });
+  }
+*/
 
 module.exports = { create, list, find, update, destroy};

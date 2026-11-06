@@ -6,6 +6,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const {expressjwt} = require('express-jwt');
+// agregado clase 23/oct
+const i18n = require('./config/i18n');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -20,11 +22,6 @@ const authRouter = require('./routes/auth');
 
 var app = express();
 
-// Agregado clase 17/octubre
-// middleware para solicitar el token en cada ruta a excepcion: .unless la ruta del login
-const SECRET_KEY = config.get("auth.jwtSecret")
-// DIsable for test
-app.use(expressjwt({secret: SECRET_KEY, algorithms:["HS256"]}).unless({path:['/api/auth/login']}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,6 +32,24 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// agregado 28/octubre
+// tiene que ser en este punto para que haya pasado primero por cookieParser()
+// inyecta el objeto i18n para poder usarl EN CADA CONTROLADOR
+// a esto se le llama inyeccion de dependencias
+app.use(i18n.init);
+ 
+// Le pasa el idioma a las vistas 
+app.use((req, res, next) => {
+  res.locals.locale = req.getLocale();
+  next();
+});
+
+// Agregado clase 17/octubre
+// middleware para solicitar el token en cada ruta a excepcion: .unless la ruta del login
+const SECRET_KEY = config.get("auth.jwtSecret")
+// DIsable for test
+app.use(expressjwt({secret: SECRET_KEY, algorithms:["HS256"]}).unless({path:['/api/auth/login']}));
+
 
 app.use('/', indexRouter);
 // agregado en la clase 10/octubre
@@ -53,14 +68,28 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// error handler (cambiado para soportar traducciones de errores)
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  const status = err.status || 500;
 
+  if (err.name === 'UnauthorizedError'){
+    res.locals.message = req.__("auth.unauthorized"); // Error 401
+  } else if (status === 403) {
+    res.locals.message = req.__("errors.forbidden"); // Error 403
+  } else if (status === 404) {
+    res.locals.message = req.__("errors.notFound"); // Error 404
+  } else if (status === 500) {
+    res.locals.message = req.__("errors.internal"); // Error 500
+  } else {
+    res.locals.message = err.message;
+  }
+  
+  
+  res.locals.status = status;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
   // render the error page
-  res.status(err.status || 500);
+  res.status(status);
   res.render('error');
 });
 
