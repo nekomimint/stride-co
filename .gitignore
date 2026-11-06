@@ -16,3 +16,7 @@ Thumbs.db
 
 # database aiven
 *.pem
+
+#config files
+local-*.json
+!local-development.example.json

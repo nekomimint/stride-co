@@ -1,15 +1,19 @@
 {
-    "mysql":
+    "server": {
+        "port": "3000"
+    },
+    "postgres":
     {
-        "host": "",
-        "port": "",
-        "database": "",
-        "user": "",
-        "password": ""
+        "host": "localhost",
+        "port": "5432"
     },
     "mongodb": {
-        "url": "",
-        "user": "",
-        "password": ""
+        "url": "localhost:27017",
+        "protocol": "mongodb://"
+    },
+    "auth": {
+        "saltRounds": "12",
+        "jwtExpires": "1h"
     }
+    
 }

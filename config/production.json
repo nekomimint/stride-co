@@ -1,15 +1,9 @@
 {
-    "mysql":
+    "postgres":
     {
-        "host": "",
-        "port": "",
-        "database": "",
-        "user": "",
-        "password": ""
+        "database": "stride_co"
     },
     "mongodb": {
-        "url": "",
-        "user": "",
-        "password": ""
+        "database": "stride_co"
     }
 }

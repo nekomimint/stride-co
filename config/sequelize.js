@@ -2,22 +2,22 @@
 // ----------------------- clase 27/09/26 -------------------------------
 const {Sequelize} = require('sequelize');
 const config = require('config')
-const mysqlConfig = config.get("mysql")
+const postgresConfig = config.get("postgres")
 const fs = require('fs')
 const path = require('path')
-//Conexion con MYSQL
+//Conexion con POSTGRE
 const sequelize = new Sequelize(
     //Nombre de la base de datos
-    mysqlConfig.database,
+    postgresConfig.database,
     //Usuario de la base de datos
-    mysqlConfig.user,
+    postgresConfig.user,
     //Password de la base de datos
-    mysqlConfig.password,
+    postgresConfig.password,
     {
         //host: define la direccion del servidor de la base de datos
-        host: mysqlConfig.host,
+        host: postgresConfig.host,
         //Puerto: El puerto en el que atiende a nuestro servidor de base de datos
-        port: Number(mysqlConfig.port),
+        port: Number(postgresConfig.port),
         // dialect: es la propiedad donde definimos la base de datos especificamente que vamos a usar
         // Dialect changed to PostgreSQL due to Render limitations...
         dialect: 'postgres',
@@ -26,6 +26,7 @@ const sequelize = new Sequelize(
                 require:true,
             rejectUnauthorized: false,
             // This is for services that require exchanges secrets to stablish a connection
+            //Only uncomment this if your provider requires it
             //ca: fs.readFileSync(path.join(__dirname, '../config/ca.pem'))
             }
         },
@@ -36,6 +37,6 @@ const sequelize = new Sequelize(
     }
 );
 
-console.log("app conectada a: " + mysqlConfig.database);
+console.log("app conectada a: " + postgresConfig.database);
 
 module.exports = sequelize;
