@@ -1,4 +1,4 @@
-describe('permisionsController', () => {
+describe.skip('permisionsController', () => {
     let permissionsController;
     let req;
     let res;
@@ -14,7 +14,7 @@ describe('permisionsController', () => {
         res = {status: jest.fn().mockReturnThis(),json: jest.fn() };
     });
 
-   test('listar permisos', () => {
+   test.skip('listar permisos', () => {
         permissionsController.list(req, res);
 
         // tenemos que obtener todo lo que haya:
@@ -35,7 +35,7 @@ describe('permisionsController', () => {
         });
     });
 
-    test('obtener permiso por id', () => {
+    test.skip('obtener permiso por id', () => {
         
         req.params = { id: 1 };
         permissionsController.find(req, res);

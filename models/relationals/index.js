@@ -47,10 +47,6 @@ User.belongsTo(Role, {foreignKey: 'role_id', as: 'role'})
         timestamps: false
     })
 
-
-
-
-
 // ###########################################################################################
 // PARA CREAR LA RELACION ENTRE LOS PRODUCTOS Y SUS VARIANTES:
 
@@ -68,7 +64,6 @@ ProductVariant.belongsTo(Product, {
   foreignKey: 'product_id',
   as: 'product'
 });
-
 
 
 // ###########################################################################################
@@ -90,5 +85,4 @@ Inventory.belongsTo(ProductVariant, {
   as: 'variant'
 });
 
-
-module.exports = {sequelize, User};
+module.exports = {sequelize, User, Role, Permission, Inventory, ProductVariant, Product};
