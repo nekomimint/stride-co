@@ -1,6 +1,6 @@
 {
 	"auth": {
-		"invalidCredentials": "Invalid Credentials",
+		"invalidCredentials": "Invalid credentials",
 		"loginSuccess": "Login successful",
 		"unauthorized": "Unauthorized"
 	},
@@ -20,7 +20,8 @@
 		"inventoryNotFound": "Product inventory not found",
 		"inventoryFound": "Product inventory found",
 		"inventoryUpdated": "Product inventory updated",
-		"inventoryDeleted": "Product inventory deleted"
+		"inventoryDeleted": "Product inventory deleted",
+		"reservedGreaterStock": "The reservation cannot be greater than the stock"
 	},
 
     "order": {
@@ -74,7 +75,8 @@
 		"variantNotFound": "Variant not found",
 		"variantFound": "Variant found",
 		"variantUpdated": "Variant updated",
-		"variantDeleted": "Variant deleted"
+		"variantDeleted": "Variant deleted",
+		"variantInInventory": "This variant is already in an inventory"
 	},
 
 	"error": {

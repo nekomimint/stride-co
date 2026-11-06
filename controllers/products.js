@@ -5,7 +5,7 @@ const ProductVariant = require("../models/relationals/ProductVariant");
 async function list(req, res, next) {
     try {
         const products = await Product.findAll({ include: { model: ProductVariant, as: 'variants' } });
-        res.json({ message: 'Products listed', data: products });
+        res.json({ message: req.__('product.findProducts'), data: products });
     } catch (err) {
         next(err);
     }
@@ -15,8 +15,8 @@ async function list(req, res, next) {
 async function find(req, res, next) {
     try {
         const product = await Product.findByPk(req.params.id, { include: { model: ProductVariant, as: 'variants' } });
-        if (!product) return res.status(404).json({ message: 'Product not found' });
-        res.json({ message: 'Product found', data: product });
+        if (!product) return res.status(404).json({ message: req.__('product.productNotFound') });
+        res.json({ message: req.__('product.productFound') , data: product });
     } catch (err) {
         next(err);
     }
@@ -26,7 +26,7 @@ async function find(req, res, next) {
 async function create(req, res, next) {
     try {
         const product = await Product.create(req.body);
-        res.status(201).json({ message: 'Product created', data: product });
+        res.status(201).json({ message: req.__('product.productCreated'), data: product });
     } catch (err) {
         next(err);
     }
@@ -36,9 +36,9 @@ async function create(req, res, next) {
 async function update(req, res, next) {
     try {
         const product = await Product.findByPk(req.params.id);
-        if (!product) return res.status(404).json({ message: 'Product not found' });
+        if (!product) return res.status(404).json({ message: req.__('product.productNotFound')});
         await product.update(req.body);
-        res.json({ message: 'Product updated', data: product });
+        res.json({ message: req.__('product.productUpdated'), data: product });
     } catch (err) {
         next(err);
     }
@@ -48,9 +48,9 @@ async function update(req, res, next) {
 async function destroy(req, res, next) {
     try {
         const product = await Product.findByPk(req.params.id);
-        if (!product) return res.status(404).json({ message: 'Product not found' });
+        if (!product) return res.status(404).json({ message: req.__('product.productNotFound')});
         await product.destroy();
-        res.json({ message: 'Product deleted' });
+        res.json({ message: req.__('product.productDeleted') });
     } catch (err) {
         next(err);
     }

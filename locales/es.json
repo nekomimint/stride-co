@@ -18,7 +18,8 @@
 		"inventoryNotFound": "Inventario de producto no encontrado",
 		"inventoryFound": "Inventario de producto encontrado",
 		"inventoryUpdated": "Inventario de producto actualizado",
-		"inventoryDeleted": "Inventario de producto eliminado"
+		"inventoryDeleted": "Inventario de producto eliminado",
+		"reservedGreaterStock": "La reserva no puede ser mayor que el stock"
 	},
 
 	"order": {
@@ -72,7 +73,8 @@
 		"variantNotFound": "Variante no encontrada",
 		"variantFound": "Variante encontrada",
 		"variantUpdated": "Variante actualizada",
-		"variantDeleted": "Variante eliminada"
+		"variantDeleted": "Variante eliminada",
+		"variantInInventory": "Esta variante ya está en un inventario"
 	},
 
 	"error": {

@@ -14,7 +14,7 @@ async function create(req, res, next)
     const variant = await ProductVariant.findByPk(variant_id);
     if (!variant) {
       return res.status(404).json({
-        message: "No se encontro la variante",
+        message: req.__('variant.variantNotFound'),
         data: null
       });
     }
@@ -23,7 +23,7 @@ async function create(req, res, next)
     const existing = await Inventory.findOne({ where: { variant_id } });
     if (existing) {
       return res.status(409).json({
-        message: "Esta variante ya tiene un inventario",
+        message: req.__('variant.variantInInventory'),
         data: existing
       });
     }
@@ -31,13 +31,13 @@ async function create(req, res, next)
     // lo reservado nunca puede ser mayor al stock
     if ((reserved || 0) > (stock || 0)) {
       return res.status(400).json({
-        message: "reserved no puede ser mayor que stock",
+        message: req.__('inventory.reservedGreaterStock'),
         data: null
       });
     }
 
     const inventory = await Inventory.create(req.body);
-    res.status(201).json({ message: 'Inventario creado', data: inventory });
+    res.status(201).json({ message: req.__('inventory.inventoryCreated'), data: inventory });
   }
   catch (err)
   {
@@ -52,7 +52,7 @@ async function list(req, res, next)
     const inventories = await Inventory.findAll({
       include: { model: ProductVariant, as: 'variant' }
     });
-    res.json({ message: "Lista de inventarios", data: inventories });
+    res.json({ message: req.__('inventory.findInventories'), data: inventories });
   }
   catch (err)
   {
@@ -71,13 +71,13 @@ async function find(req, res, next)
 
     if (!inventory) {
       return res.status(404).json({
-        message: "No se encontro el inventario",
+        message: req.__('inventory.inventoryNotFound'),
         data: null
       });
     }
 
     res.json({
-      message: "Inventario encontrado",
+      message: req.__('inventory.inventoryFound'),
       data: inventory
     });
   }
@@ -98,7 +98,7 @@ async function update(req, res, next)
 
     if (!inventory) {
       return res.status(404).json({
-        message: "Inventario no encontrado"
+        message: req.__('inventory.inventoryNotFound')
       });
     }
 
@@ -110,14 +110,14 @@ async function update(req, res, next)
 
     if (changes.reserved > changes.stock) {
       return res.status(400).json({
-        message: "reserved no puede ser mayor que stock"
+        message: req.__('inventory.reservedGreaterStock')
       });
     }
 
     await inventory.update(changes);
 
     res.json({
-      message: "Inventario actualizado",
+      message: req.__('inventory.inventoryUpdated'),
       data: inventory
     });
   }
@@ -136,14 +136,14 @@ async function destroy(req, res, next)
 
     if (!inventory) {
       return res.status(404).json({
-        message: "Inventario no encontrado"
+        message: req.__('inventory.inventoryNotFound')
       });
     }
 
     await inventory.destroy();
 
     res.json({
-      message: "Inventario eliminado",
+      message: req.__('inventory.inventoryDeleted'),
       data: inventory
     });
   }

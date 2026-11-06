@@ -7,7 +7,7 @@ async function list(req, res, next) {
     const variants = await ProductVariant.findAll({
       include: { model: Product, as: 'product' }
     });
-    res.json({ message: 'Variants listed', data: variants });
+    res.json({ message: req.__('variant.findVariant'), data: variants });
   } catch (err) {
     next(err);
   }
@@ -19,8 +19,8 @@ async function find(req, res, next) {
     const variant = await ProductVariant.findByPk(req.params.id, {
       include: { model: Product, as: 'product' }
     });
-    if (!variant) return res.status(404).json({ message: 'Variant not found' });
-    res.json({ message: 'Variant found', data: variant });
+    if (!variant) return res.status(404).json({ message: req.__('variant.variantNotFound') });
+    res.json({ message: req.__('variant.variantFound'), data: variant });
   } catch (err) {
     next(err);
   }
@@ -30,7 +30,7 @@ async function find(req, res, next) {
 async function create(req, res, next) {
   try {
     const variant = await ProductVariant.create(req.body);
-    res.status(201).json({ message: 'Variant created', data: variant });
+    res.status(201).json({ message: req.__('variant.variantCreated'), data: variant });
   } catch (err) {
     next(err);
   }
@@ -40,9 +40,9 @@ async function create(req, res, next) {
 async function update(req, res, next) {
   try {
     const variant = await ProductVariant.findByPk(req.params.id);
-    if (!variant) return res.status(404).json({ message: 'Variant not found' });
+    if (!variant) return res.status(404).json({ message: req.__('variant.variantNotFound') });
     await variant.update(req.body);
-    res.json({ message: 'Variant updated', data: variant });
+    res.json({ message: req.__('variant.variantUpdated'), data: variant });
   } catch (err) {
     next(err);
   }
@@ -52,9 +52,9 @@ async function update(req, res, next) {
 async function destroy(req, res, next) {
   try {
     const variant = await ProductVariant.findByPk(req.params.id);
-    if (!variant) return res.status(404).json({ message: 'Variant not found' });
+    if (!variant) return res.status(404).json({ message: req.__('variant.variantNotFound') });
     await variant.destroy();
-    res.json({ message: 'Variant deleted' });
+    res.json({ message: req.__('variant.variantDeleted') });
   } catch (err) {
     next(err);
   }

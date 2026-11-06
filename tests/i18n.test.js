@@ -1,5 +1,3 @@
-// Test construido usando Antigravity
-
 /* global beforeAll, afterAll, process, fetch, URLSearchParams */
 const path = require('path');
 const fs = require('fs');
@@ -77,9 +75,6 @@ describe('Pruebas de Internacionalización (i18n)', () => {
     }
   });
 
-  // =========================================================================
-  // 1. Integridad y consistencia de los archivos de localización
-  // =========================================================================
   describe('Archivos de localización (en.json y es.json)', () => {
     const enPath = path.join(__dirname, '..', 'locales', 'en.json');
     const esPath = path.join(__dirname, '..', 'locales', 'es.json');
@@ -135,9 +130,6 @@ describe('Pruebas de Internacionalización (i18n)', () => {
     });
   });
 
-  // =========================================================================
-  // 2. Configuración y detección de idioma en i18n
-  // =========================================================================
   describe('Configuración y detección de idioma en el middleware', () => {
     test('debe usar "en" como idioma por defecto cuando no se especifica preferencia', () => {
       const { req } = createMockContext();
@@ -191,15 +183,12 @@ describe('Pruebas de Internacionalización (i18n)', () => {
     });
   });
 
-  // =========================================================================
-  // 3. Traducciones de los Controllers
-  // =========================================================================
   describe('Traducciones de todos los Controllers', () => {
     const modules = [
       {
         name: 'auth',
         keys: {
-          invalidCredentials: ['Invalid Credentials', 'Credenciales Inválidas'],
+          invalidCredentials: ['Invalid credentials', 'Credenciales Inválidas'],
           loginSuccess: ['Login successful', 'Inicio de sesión exitoso'],
           unauthorized: ['Unauthorized', 'No autorizado']
         }
@@ -311,9 +300,6 @@ describe('Pruebas de Internacionalización (i18n)', () => {
     });
   });
 
-  // =========================================================================
-  // 4. Traducciones de las vistas Pug
-  // =========================================================================
   describe('Vistas Pug (index.pug, error.pug, layout.pug)', () => {
     const viewsDir = path.join(__dirname, '..', 'views');
 
@@ -376,9 +362,6 @@ describe('Pruebas de Internacionalización (i18n)', () => {
     });
   });
 
-  // =========================================================================
-  // 5. Traducciones de Index (routes/index.js)
-  // =========================================================================
   describe('Ruta Index (GET /)', () => {
     test('debe responder con mensaje traducido en inglés', () => {
       const indexRouter = require('../routes/index');
@@ -411,9 +394,6 @@ describe('Pruebas de Internacionalización (i18n)', () => {
     });
   });
 
-  // =========================================================================
-  // 6. Traducciones del Manejador Central de Errores (app.js error handler)
-  // =========================================================================
   describe('Manejador central de errores (app.js error handler)', () => {
     const errorHandler = app._router.stack.find(
       (layer) => layer.handle && layer.handle.length === 4
@@ -488,9 +468,6 @@ describe('Pruebas de Internacionalización (i18n)', () => {
     });
   });
 
-  // =========================================================================
-  // 7. Pruebas de integración HTTP reales sobre Express
-  // =========================================================================
   describe('Pruebas de integración HTTP sobre la API Express', () => {
     test('GET /?lang=en con token devuelve mensaje traducido en inglés', async () => {
       const response = await fetch(`${baseUrl}/?lang=en`, {
