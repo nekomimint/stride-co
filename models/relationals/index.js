@@ -86,4 +86,4 @@ Inventory.belongsTo(ProductVariant, {
   as: 'variant'
 });
 
-module.exports = {sequelize, User, Role, Permission};
+module.exports = {sequelize, User, Role, Permission, Inventory, ProductVariant, Product};

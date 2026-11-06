@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "dev": "supervisor ./bin/www",
     "test": "jest --detectOpenHandles",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "seed": "node seed.js"
   },
   "dependencies": {
     "accesscontrol": "^2.2.1",

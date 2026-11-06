@@ -1,3 +1,6 @@
+// esta semilla era la que se usaba para insertar manualmente
+// los roles dentro de la base de datos
+// pero este comportamiento ya se migro a seed.js  
 -- 1. INSERTAR ROLES
 INSERT INTO roles (id, name, description) VALUES
 (1, 'admin', 'Administrador del sistema'),
