@@ -1,5 +1,5 @@
 const config = require("config")
-const {User} = require('../models/relationals');
+const {User, Role} = require('../models/relationals');
 const {verifyPassword} = require('../utils/password');
 const jwt = require('jsonwebtoken');
     // el atacante puede ver el payload, el sub, pero
