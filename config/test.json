@@ -1,0 +1,25 @@
+{
+    "server": {
+        "port": 3001
+    },
+    "postgres": {
+        "host": "localhost",
+        "port": 5432,
+        "database": "stride_test",
+        "user": "changue_your_instance",
+        "password": "changue_your_instance"
+    },
+    "mongodb": {
+        "url": "localhost:27017",
+        "user": "changue_your_instance",
+        "password": "changue_your_instance",
+        "database": "stride_test"
+    },
+    "auth": {
+        "jwtSecret": "test-only-secret",
+        "saltRounds": 4,
+        "jwtExpires": "5m",
+        "jwtIssuer": "stride-test",
+        "jwtAudience": "stride-test"
+    }
+}

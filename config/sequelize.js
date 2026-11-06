@@ -1,27 +1,42 @@
 // archivo de configuración para configurar la base de datos
 // ----------------------- clase 27/09/26 -------------------------------
 const {Sequelize} = require('sequelize');
-
-//Conexion con MYSQL
+const config = require('config')
+const postgresConfig = config.get("postgres")
+const fs = require('fs')
+const path = require('path')
+//Conexion con POSTGRE
 const sequelize = new Sequelize(
     //Nombre de la base de datos
-    'stride_co',
+    postgresConfig.database,
     //Usuario de la base de datos
-    'root',
+    postgresConfig.user,
     //Password de la base de datos
-    'abcd1234',
+    postgresConfig.password,
     {
         //host: define la direccion del servidor de la base de datos
-        host: 'localhost',
+        host: postgresConfig.host,
         //Puerto: El puerto en el que atiende a nuestro servidor de base de datos
-        port: 3306,
+        port: Number(postgresConfig.port),
         // dialect: es la propiedad donde definimos la base de datos especificamente que vamos a usar
-        dialect: 'mysql',
+        // Dialect changed to PostgreSQL due to Render limitations...
+        dialect: 'postgres',
+        dialectOptions: {
+            ssl: {
+                require:true,
+            rejectUnauthorized: false,
+            // This is for services that require exchanges secrets to stablish a connection
+            //Only uncomment this if your provider requires it
+            //ca: fs.readFileSync(path.join(__dirname, '../config/ca.pem'))
+            }
+        },
         logging: false,
         define:{
             underscored: true
         }
     }
 );
+
+console.log("app conectada a: " + postgresConfig.database);
 
 module.exports = sequelize;

@@ -1,5 +1,6 @@
+const config = require('config')
 const bcrypt = require('bcrypt');
-const BCRYPT_SALT_ROUNDS = process.env.BCRYPT_SALT_ROUNDS
+const BCRYPT_SALT_ROUNDS = config.get('auth.saltRounds')
 
 
 async function hashPassword(password) 
