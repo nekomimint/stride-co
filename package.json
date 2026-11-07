@@ -6,9 +6,11 @@
     "start": "NODE_ENV=production node ./bin/www",
     "dev": "NODE_ENV=development supervisor ./bin/www",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "seed": "NODE_ENV=development node seed.js"
   },
   "dependencies": {
+    "accesscontrol": "^2.2.1",
     "bcrypt": "^6.0.0",
     "config": "^4.4.2",
     "cookie-parser": "~1.4.4",

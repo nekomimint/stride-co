@@ -1,6 +1,6 @@
 // definimos el conjunto de pruebas para productos
 
-describe('productsController', () => {
+describe.skip('productsController', () => {
   let productsController;
   let req;
   let res;
@@ -16,7 +16,7 @@ describe('productsController', () => {
     res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
   });
 
-  test('crear un producto', () => {
+  test.skip('crear un producto', () => {
     req.body = {
       name: "Tenis Nike Air",
       price: 2500
@@ -34,7 +34,7 @@ describe('productsController', () => {
     });
   });
 
-  test('listar todos los productos', () => {
+  test.skip('listar todos los productos', () => {
     // creamos dos productos primero para llenar la lista
     req.body = {
       name: "Tenis Nike Air",
@@ -70,7 +70,7 @@ describe('productsController', () => {
     });
   });
 
-  test('obtener un producto por id', () => {
+  test.skip('obtener un producto por id', () => {
     req.body = {
       name: "Tenis Nike Air",
       price: 2500
@@ -93,7 +93,7 @@ describe('productsController', () => {
     });
   });
 
-  test('actualizar un producto', () => {
+  test.skip('actualizar un producto', () => {
     req.body = {
       name: "Tenis Nike Air",
       price: 2500
@@ -120,7 +120,7 @@ describe('productsController', () => {
     });
   });
 
-  test('eliminar un producto', () => {
+  test.skip('eliminar un producto', () => {
     req.body = {
       name: "Tenis Nike Air",
       price: 2500

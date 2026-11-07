@@ -16,8 +16,8 @@ const permissionsRouter = require('./routes/permissions');
 const productsRouter = require('./routes/products');
 const variantsRouter = require('./routes/variants');
 const inventoryRouter = require('./routes/inventory');
-const customersRouter = require('./routes/customers');
 const ordersRouter = require('./routes/orders');
+const customersRouter = require('./routes/customers');
 const authRouter = require('./routes/auth');
 
 var app = express();
