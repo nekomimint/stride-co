@@ -1,0 +1,107 @@
+{
+	"auth": {
+		"invalidCredentials": "Credenciales Inválidas",
+		"loginSuccess": "Inicio de sesión exitoso",
+		"unauthorized": "No autorizado"
+	},
+	"customers": {
+		"customerCreated": "Cliente creado exitosamente",
+		"findCustomers": "Mostrar la lista de clientes",
+		"customerNotFound": "No se encontró al cliente",
+		"customerFound": "Cliente encontrado",
+		"customerUpdated": "Cliente actualizado",
+		"customerDeleted": "Cliente eliminado",
+		"cannotAccessCustomer": "No puedes acceder a este cliente",
+		"cannotModifyCustomer": "No puedes modificar este cliente"
+	},
+	"inventory": {
+		"inventoryCreated": "Inventario del producto creado exitosamente",
+		"findInventories": "Lista de inventarios de productos",
+		"inventoryNotFound": "Inventario de producto no encontrado",
+		"inventoryFound": "Inventario de producto encontrado",
+		"inventoryUpdated": "Inventario de producto actualizado",
+		"inventoryDeleted": "Inventario de producto eliminado",
+		"reservedGreaterStock": "La reserva no puede ser mayor que el stock"
+	},
+
+	"order": {
+		"orderCreated": "Orden creada exitosamente",
+		"findOrders": "Mostrar la lista de órdenes",
+		"orderNotFound": "No se encontró la orden",
+		"orderFound": "Orden encontrada",
+		"orderUpdated": "Orden actualizada",
+		"orderDeleted": "Orden eliminada",
+		"orderNotInUser": "Esta orden no le pertenece al usuario actual"
+	},
+
+	"permission": {
+		"permissionCreated": "Permiso creado exitosamente",
+		"findPermissions": "Mostrar los permissos que se pueden otorgar a los usuarios",
+		"permissionNotFound": "No se encontró el permiso",
+		"permissionFound": "Permiso encontrado",
+		"permissionUpdated": "Permiso actualizado",
+		"permissionDeleted": "Permiso eliminado"
+	},
+
+	"product": {
+		"productCreated": "Producto creado exitosamente",
+		"findProducts": "Mostrar la lista de productos",
+		"productNotFound": "No se encontró el producto",
+		"productFound": "Producto encontrado",
+		"productUpdated": "Producto actualizado",
+		"productDeleted": "Producto eliminado"
+	},
+
+	"role": {
+		"roleCreated": "Rol creado exitosamente",
+		"findRoles": "Mostrar los roles disponibles",
+		"roleNotFound": "No se encontró el rol",
+		"roleFound": "Rol encontrado",
+		"roleUpdated": "Rol actualizado",
+		"roleDeleted": "Rol eliminado"
+	},
+
+	"user": {
+		"userCreated": "Usuario creado exitosamente",
+		"findUsers": "Mostrar la lista de usuarios",
+		"userNotFound": "Usuario no encontrado",
+		"userFound": "Usuario encontrado",
+		"userUpdated": "Usuario actualizado",
+		"userDeleted": "Usuario eliminado",
+		"cannotAccessUser": "No puedes acceder a este usuario",
+		"cannotModifyUser": "No puedes modificar este usuario",
+		"cannotDeleteUser": "No puedes eliminar este usuario"
+	},
+
+	"variant": {
+		"variantCreated": "Variante creada exitosamente",
+		"findVariant": "Mostrar la lista de variantes de productos",
+		"variantNotFound": "Variante no encontrada",
+		"variantFound": "Variante encontrada",
+		"variantUpdated": "Variante actualizada",
+		"variantDeleted": "Variante eliminada",
+		"variantInInventory": "Esta variante ya está en un inventario"
+	},
+
+	"error": {
+		"statusLabel": "Estado: %s"
+	},
+
+	"index": {
+		"apiWorking": "API funcionando",
+		"welcome": "Bienvenido a %s"
+	},
+
+	"layout": {
+		"defaultTitle": "Mi API"
+	},
+
+	"errors": {
+		"notFound": "No encontrado",
+		"forbidden": "Acceso denegado",
+		"internal": "Error interno del servidor",
+		"noRole": "Sin rol asignado en el token",
+		"errorPermissions": "Error interno mientras se verificaban los permisos"
+	}
+	
+}
