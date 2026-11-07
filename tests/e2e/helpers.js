@@ -1,8 +1,20 @@
-const request = require('supertest');
+const supertest = require('supertest');
 const app = require('../../app');
 
-// Cliente Supertest envolviendo directamente la instancia de Express
-const api = request(app);
+// Proxy que permite usar request directamente (request.get, request.post)
+// o como función envolvente (request(app).get, request(app).post)
+const request = new Proxy(supertest, {
+  get(target, prop) {
+    if (prop in target) {
+      return target[prop];
+    }
+    const agent = supertest(app);
+    return typeof agent[prop] === 'function' ? agent[prop].bind(agent) : agent[prop];
+  },
+  apply(target, thisArg, argArray) {
+    return target(...argArray);
+  },
+});
 
 /**
  * Función asíncrona para iniciar sesión y retornar el token JWT
@@ -11,7 +23,7 @@ const api = request(app);
  * @returns {Promise<string>} token
  */
 const login = async (email, password) => {
-  const response = await api
+  const response = await supertest(app)
     .post('/api/auth/login')
     .send({ email, password });
 
@@ -20,8 +32,8 @@ const login = async (email, password) => {
 
 module.exports = {
   app,
-  request: api,
-  api,
+  request,
+  api: request,
   login,
   baseURL: app,
 };
