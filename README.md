@@ -243,6 +243,17 @@ Los permisos siguen una estructura sencilla que consta de tres partes separadas 
 | **`permissions:read:any`** | Ver permisos | Sí | - | - |
 | **`permissions:manage:any`** | Gestionar permisos | Sí | - | - |
 
+### Usuarios de demostración
+ 
+Creados por `npm run seed`. Las contraseñas son exclusivas de estas cuentas
+y no se reutilizan en ningún otro lugar.
+ 
+| Rol   | Nombre         | Correo          | Contraseña |
+|-------|----------------|-----------------|------------|
+| admin | Jesus Vill     | jesus@gmail.com | admin123   |
+| sales | Dany Martinez  | dany@gmail.com  | sales123   |
+| user  | Sofia Rivero   | sofia@gmail.com | usuario123 |
+ 
 
 ### Enpoints protegidos
 `productos`, `orders` `users` `variants`, `inventory`, `customers`, `roles`, `permissions`
