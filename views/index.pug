@@ -1,18 +1,16 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  // falto la internacionalización de esta parte nomas, pero esto va a cambiar de todas formas
+  //- falto la internacionalización de esta parte nomas
   table
     tr
-        th Nombre
-        th descripción
-        th Marca
-        th Precio
+      th #{__('products.name')}
+      th Descripción
+      th Marca
+      th Precio
     each product in products
-        tr
-            td=product.name
-            td=product.description
-            td=product.brand
-            td=product.price
+      tr
+        td= product.name
+        td= product.description
+        td= product.brand
+        td= product.price
