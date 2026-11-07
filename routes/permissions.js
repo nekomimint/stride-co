@@ -3,24 +3,23 @@ const router = express.Router();
 const controller = require('../controllers/permissions');
 const logger = require('../utils/logger');
 
+const authorize = require('../middlewares/authorize');
+
 const log = (message)=>(req, res, next)=>{
     logger.info(message);
-    next();
+next();
 };
 
-/* POST permissions create*/
-router.post('/', log('Creating permission'), controller.create);
 
-/* GET permissions listing. */
-router.get('/', log('Listing permissions'), controller.list);
+// solo el admin tiene el permiso de any, solo el le puede mover aqui
+router.post('/', authorize('permissions', 'create', 'any'), log('Creating permission'), controller.create);
 
-/*GEt permisions by id */
-router.get('/:id', log('Searching permission by id'), controller.find);
+router.get('/', authorize('permissions', 'read', 'any'), log('Listing permissions'), controller.list);
 
-/*Put permissions to update */
-router.put('/:id', log('Updating permission'), controller.update);
+router.get('/:id', authorize('permissions', 'read', 'any'), log('Searching permission by id'), controller.find);
 
-/*DELETE permissions by id*/
-router.delete('/:id', log('Deleting permission'), controller.destroy);
+router.put('/:id', authorize('permissions', 'update', 'any'), log('Updating permission'), controller.update);
+
+router.delete('/:id', authorize('permissions', 'delete', 'any'), log('Deleting permission'), controller.destroy);
 
 module.exports = router;

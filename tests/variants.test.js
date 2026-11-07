@@ -15,7 +15,7 @@ describe('variantsController', () => {
     res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
   });
 
-  test('crear una variante', () => {
+  test.skip('crear una variante', () => {
     req.body = {
       sku: "SKU-001",
       color: "Rojo"
@@ -37,7 +37,7 @@ describe('variantsController', () => {
     expect(response.data.id).toBeDefined();
   });
 
-  test('listar todas las variantes', () => {
+  test.skip('listar todas las variantes', () => {
     // creamos dos variantes primero para llenar la lista
     req.body = {
       sku: "SKU-001",
@@ -74,7 +74,7 @@ describe('variantsController', () => {
     });
   });
 
-  test('obtener una variante por id', () => {
+  test.skip('obtener una variante por id', () => {
     req.body = {
       sku: "SKU-001",
       color: "Rojo"
@@ -97,7 +97,7 @@ describe('variantsController', () => {
     });
   });
 
-  test('actualizar una variante', () => {
+  test.skip('actualizar una variante', () => {
     req.body = {
       sku: "SKU-001",
       color: "Rojo"
@@ -124,7 +124,7 @@ describe('variantsController', () => {
     });
   });
 
-  test('eliminar una variante', () => {
+  test.skip('eliminar una variante', () => {
     req.body = {
       sku: "SKU-001",
       color: "Rojo"

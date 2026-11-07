@@ -4,24 +4,23 @@ const logger = require('../utils/logger');
 
 const controller = require('../controllers/roles');
 
+const authorize = require('../middlewares/authorize');
+
 const log = (message)=>(req, res, next)=>{
     logger.info(message);
-    next();
+next();
 };
 
-/* POST role create*/
-router.post('/', log('Creating role'), controller.create);
+// solo el admin tiene permiso de acceder a estar rutas
+// se requiere permiso any, permiso que solo el tiene asignado
+router.post('/', authorize('roles', 'create', 'any'), log('Creating role'), controller.create);
 
-/* GET roles listing. */
-router.get('/', log('Listing roles'), controller.list);
+router.get('/', authorize('roles', 'read', 'any'), log('Listing roles'), controller.list);
 
-/*GEt role by id */
-router.get('/:id', log('Searching role by id'), controller.find);
+router.get('/:id', authorize('roles', 'read', 'any'), log('Searching role by id'), controller.find);
 
-/*Put role to update */
-router.put('/:id', log('Updating role'), controller.update);
+router.put('/:id', authorize('roles', 'update', 'any'), log('Updating role'), controller.update);
 
-/*DELETE role by id*/
-router.delete('/:id', log('Deleting role'), controller.destroy);
+router.delete('/:id', authorize('roles', 'delete', 'any'), log('Deleting role'), controller.destroy);
 
 module.exports = router;

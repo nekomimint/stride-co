@@ -1,21 +1,21 @@
-
-const {User} = require('../models/relationals');
+const config = require("config")
+const {User, Role} = require('../models/relationals');
 const {verifyPassword} = require('../utils/password');
 const jwt = require('jsonwebtoken');
     // el atacante puede ver el payload, el sub, pero
     // esto es lo que el atacante no podra recrear:
     // Never write in code the sensitive data
-const SECRET_KEY = process.env.SECRET_KEY
-const INVALID_CREDENTIALS = {message: "Invalid credentials"};
+const SECRET_KEY = config.get('auth.jwtSecret')
+
 
 // agregado clase 17 de octubre
 function signToken(user){
     const jwtUser = {
         // tiempo de expiración
-        expiresIn: process.env.JWT_EXPIRES_IN,
+        expiresIn: config.get('auth.jwtExpires'),
         // la aplicación que lo emite
-        issuer: process.env.JWT_ISSUER,
-        audience: process.env.JWT_AUDIENCE,
+        issuer: config.get('auth.jwtIssuer'),
+        audience: config.get('auth.jwtAudience'),
          // algoritmo a utilizar
         algorithm: "HS256"
 
@@ -27,21 +27,21 @@ function signToken(user){
 
     // para entregar el token firmado
     // sub: sujeto, lo que identifica al usuario
-    return jwt.sign({sub: String(user.id)}, SECRET_KEY, jwtUser);
+    return jwt.sign({sub: String(user.id), role: user.role?.name}, SECRET_KEY, jwtUser);
 }
 
 async function login(req, res, next){
 
     // Un usuario con estado active = false tampoco deberá poder autenticarse || !user.active
     const {email, password} = req.body;
-    const user = await User.findOne({where: {email}});
-    if (!user || !user.active) return res.status(401).json(INVALID_CREDENTIALS);
+    const user = await User.findOne({where: {email}, include: [{ model: Role, as: 'role' }]});
+    if (!user || !user.active) return res.status(401).json({message: req.__('auth.invalidCredentials')});
     
     const valid = await verifyPassword(password, user.password);
-    if(!valid) return res.status(401).json(INVALID_CREDENTIALS);
+    if(!valid) return res.status(401).json({message: req.__('auth.invalidCredentials')});
 
     res.json({
-        message: "Login succesful",
+        message: req.__('auth.loginSuccess'), //Lee el logginSuccess del json en locales
         data:{
             token: signToken(user),
             token_type: "Bearer",

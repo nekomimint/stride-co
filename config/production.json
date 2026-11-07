@@ -1,0 +1,9 @@
+{
+    "postgres":
+    {
+        "database": "stride_co"
+    },
+    "mongodb": {
+        "database": "stride_co"
+    }
+}

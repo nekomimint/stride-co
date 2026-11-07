@@ -1,0 +1,22 @@
+{
+    "postgres":
+    {
+        "host": "your_provider",
+        "port": "5432_or_your_port",
+        "user": "user_to_access",
+        "password": "password_to_access"
+    },
+    "mongodb": {
+        "url": "your_provider_url",
+        "user": "user_to_access",
+        "password": "password_to_access",
+        "protocol": "atlas_uses_mongodb+srv://_chech_the_url_of_your_provider"
+    },
+    "auth": {
+        "jwtSecret": "your_very_secret_key",
+        "saltRounds": 10,
+        "jwtExpires": "your_time_like_30m_or_1h",
+        "jwtIssuer": "your_issuer",
+        "jwtAudience": "your_audience"
+    }
+}

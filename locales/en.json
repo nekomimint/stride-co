@@ -1,0 +1,110 @@
+{
+	"auth": {
+		"invalidCredentials": "Invalid credentials",
+		"loginSuccess": "Login successful",
+		"unauthorized": "Unauthorized"
+	},
+
+	"customers": {
+		"customerCreated": "Client created succesfully",
+		"findCustomers": "Show customer list",
+		"customerNotFound": "Customer not found",
+		"customerFound": "Customer found",
+		"customerUpdated": "Customer updated",
+		"customerDeleted": "Customer deleted",
+		"cannotAccessCustomer": "You cannot access this customer",
+		"cannotModifyCustomer": "You cannot modify this customer"
+	},
+
+    "inventory": {
+		"inventoryCreated": "Product inventory created succesfully",
+		"findInventories": "Show product inventories",
+		"inventoryNotFound": "Product inventory not found",
+		"inventoryFound": "Product inventory found",
+		"inventoryUpdated": "Product inventory updated",
+		"inventoryDeleted": "Product inventory deleted",
+		"reservedGreaterStock": "The reservation cannot be greater than the stock"
+	},
+
+    "order": {
+		"orderCreated": "Order created succesfully",
+		"findOrders": "Show orders",
+		"orderNotFound": "Order not found",
+		"orderFound": "Order found",
+		"orderUpdated": "Order updated",
+		"orderDeleted": "Order deleted",
+		"orderNotInUser": "This order does not belong to the current user"
+	},
+
+	"permission": {
+		"permissionCreated": "Permission created succesfully",
+		"findPermissions": "Show permissions that can be granted",
+		"permissionNotFound": "Permission not found",
+		"permissionFound": "Permission found",
+		"permissionUpdated": "Permission updated",
+		"permissionDeleted": "Permission deleted"
+	},
+
+	"product": {
+		"productCreated": "Product created succesfully",
+		"findProducts": "Show product list",
+		"productNotFound": "Product not found",
+		"productFound": "Product found",
+		"productUpdated": "Product updated",
+		"productDeleted": "Product deleted"
+	},
+
+	"role": {
+		"roleCreated": "Role created succesfully",
+		"findRoles": "Show available roles",
+		"roleNotFound": "Role not found",
+		"roleFound": "Role found",
+		"roleUpdated": "Role updated",
+		"roleDeleted": "Role deleted"
+	},
+
+	"user": {
+		"userCreated": "User created succesfully",
+		"findUsers": "Show users",
+		"userNotFound": "User not found",
+		"userFound": "User found",
+		"userUpdated": "User updated",
+		"userDeleted": "User deleted",
+		"cannotAccessUser": "You cannot access this user",
+		"cannotModifyUser": "You cannot modify this user",
+		"cannotDeleteUser": "You cannot delete this user"
+
+	},
+
+	"variant": {
+		"variantCreated": "Variant created succesfully",
+		"findVariant": "Show product variants",
+		"variantNotFound": "Variant not found",
+		"variantFound": "Variant found",
+		"variantUpdated": "Variant updated",
+		"variantDeleted": "Variant deleted",
+		"variantInInventory": "This variant is already in an inventory"
+	},
+
+	"error": {
+		"statusLabel": "Status: %s"
+	},
+
+	"index": {
+		"apiWorking": "API working",
+		"welcome": "Welcome to %s"
+	},
+
+	"layout": {
+		"defaultTitle": "My API"
+	},
+
+	"errors": {
+		"notFound": "Not found",
+		"forbidden": "Forbidden",
+		"internal": "Internal server error",
+		"noRole": "No role assigned in token",
+		"errorPermissions": "Internal error while verifying permissions"
+	}
+	
+}

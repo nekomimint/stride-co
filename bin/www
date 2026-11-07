@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+const config = require('config')
 
 /**
  * Module dependencies.
@@ -19,7 +19,7 @@ const connectMongo = require('../config/mongoose');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(config.get('server.port') );
 app.set('port', port);
 
 /**
