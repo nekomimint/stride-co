@@ -48,7 +48,7 @@ async function find(req, res, next){
   const id = req.params.id;
 
   if (!canAccess(req, id)) {
-    return res.status(403).json({ message: 'No puedes acceder a este usuario' });
+    return res.status(403).json({ message: req.__('user.cannotAccessUser') });
   }
 
   const user = await User.findByPk(id, {include:{model: Role, as: 'role'}});
@@ -73,7 +73,7 @@ async function update(req, res, next)
   const id = req.params.id;
 
   if (!canAccess(req, id)) {
-    return res.status(403).json({ message: 'No puedes modificar este usuario' });
+    return res.status(403).json({ message: req.__('user.cannotModifyUser')});
   }
 
   const name = req.body.name;
@@ -108,7 +108,7 @@ async function destroy(req, res, next)
   const id = req.params.id;
 
   if (!canAccess(req, id)) {
-    return res.status(403).json({ message: 'No puedes eliminar este usuario' });
+    return res.status(403).json({ message: req.__('user.cannotDeleteUser') });
   }
 
   const user = await User.findByPk(id);

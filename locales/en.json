@@ -11,7 +11,9 @@
 		"customerNotFound": "Customer not found",
 		"customerFound": "Customer found",
 		"customerUpdated": "Customer updated",
-		"customerDeleted": "Customer deleted"
+		"customerDeleted": "Customer deleted",
+		"cannotAccessCustomer": "You cannot access this customer",
+		"cannotModifyCustomer": "You cannot modify this customer"
 	},
 
     "inventory": {
@@ -30,7 +32,8 @@
 		"orderNotFound": "Order not found",
 		"orderFound": "Order found",
 		"orderUpdated": "Order updated",
-		"orderDeleted": "Order deleted"
+		"orderDeleted": "Order deleted",
+		"orderNotInUser": "This order does not belong to the current user"
 	},
 
 	"permission": {
@@ -66,7 +69,11 @@
 		"userNotFound": "User not found",
 		"userFound": "User found",
 		"userUpdated": "User updated",
-		"userDeleted": "User deleted"
+		"userDeleted": "User deleted",
+		"cannotAccessUser": "You cannot access this user",
+		"cannotModifyUser": "You cannot modify this user",
+		"cannotDeleteUser": "You cannot delete this user"
+
 	},
 
 	"variant": {
@@ -95,7 +102,9 @@
 	"errors": {
 		"notFound": "Not found",
 		"forbidden": "Forbidden",
-		"internal": "Internal server error"
+		"internal": "Internal server error",
+		"noRole": "No role assigned in token",
+		"errorPermissions": "Internal error while verifying permissions"
 	}
 	
 }

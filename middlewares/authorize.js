@@ -10,7 +10,7 @@ const authorize = (resource, action, possession = 'any') => {
             const userRole = req.auth?.role || req.user?.role;
 
             if (!userRole) {
-                return res.status(403).json({ message: '403 Forbidden: Sin rol asignado en el token' });
+                return res.status(403).json({ message: req.__('errors.noRole') });
             }
 
             const grantMethod = `${action}${possession.charAt(0).toUpperCase() + possession.slice(1)}`;
@@ -27,7 +27,7 @@ const authorize = (resource, action, possession = 'any') => {
             console.log("======================");
 
             if (!permission || !permission.granted) {
-                return res.status(403).json({ message: '403 Forbidden: No tienes permiso' });
+                return res.status(403).json({ message: req.__('errors.forbidden') });
             }
 
             req.canAny = ac.can(String(userRole))[`${action}Any`](resource).granted;
@@ -36,7 +36,7 @@ const authorize = (resource, action, possession = 'any') => {
             next();
         } catch (error) {
             console.error("Error en middleware RBAC:", error);
-            return res.status(500).json({ message: "Error interno verificando permisos" });
+            return res.status(500).json({ message: req.__('errors.errorPermissions') });
         }
     };
 };

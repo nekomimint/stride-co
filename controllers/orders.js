@@ -35,7 +35,7 @@ async function create(req, res, next) {
         });
         
         res.status(201).json({
-          message: "Orden creada",
+          message: req.__('order.orderCreated'),
           data: order
         });
 
@@ -50,7 +50,7 @@ async function list(req, res, next) {
         const filter = req.canAny ? {} : {userId: req.user.id};
         const orders = await Order.find(filter);
         res.json({
-          message: "Lista de ordenes",
+          message: req.__('order.findOrders'),
           data: orders
         });
     } catch (error) {
@@ -64,16 +64,16 @@ async function find(req, res, next) {
     const order = await Order.findById(req.params.id);
 
     if(!order) {
-      return res.status(404).json({message: 'Orden no encontrada'});
+      return res.status(404).json({message: req.__('order.orderNotFound')});
     }
 
     // Al ser async, usamos await
     if(!(await canAccess(req, order))) {
-      return res.status(403).json({message: 'La orden no pertenece al usuario actual'});
+      return res.status(403).json({message: req.__('order.orderNotInUser')});
     }
 
     res.json({
-      message: "Orden por id",
+      message: req.__('order.orderFound'),
       data: order
     });
   } catch (error) {
@@ -88,11 +88,11 @@ async function update(req, res, next) {
     const order = await Order.findById(req.params.id);
 
     if (!order) {
-      return res.status(404).json({message: 'Orden no encontrada'});
+      return res.status(404).json({message: req.__('order.orderNotFound')});
     }
 
     if(!canAccess(req, order)){
-      return res.status(403).json({message: 'La orden no pertenece al usuario actual'});
+      return res.status(403).json({message: req.__('order.orderNotInUser')});
     }
 
     const {status, total} = req.body;
@@ -107,7 +107,7 @@ async function update(req, res, next) {
     await order.save();
 
     res.json({
-      message: "Orden actualizada",
+      message: req.__('order.orderUpdated'),
       data: order
     });
   } catch (error) {
@@ -121,17 +121,17 @@ async function destroy(req, res, next) {
     const order = await Order.findById(req.params.id);
 
     if(!order){
-      return res.status(404).json({message: 'Orden no encontrada'});
+      return res.status(404).json({message: req.__('order.orderNotFound')});
     }
 
     if(!canAccess(req, order)) {
-      return res.status(403).json({message: 'La orden no pertenece al usuario actual'});
+      return res.status(403).json({message: req.__('order.orderNotInUser')});
     }
 
     await Order.findByIdAndDelete(req.params.id);
 
     res.json({
-      message: "Orden eliminada",
+      message: req.__('order.orderDeleted'),
       data: order
     });
   } catch (error) {

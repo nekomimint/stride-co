@@ -48,7 +48,7 @@ async function find(req, res, next) {
     }
 
     if (!canAccess(req, customer)) {
-      return res.status(403).json({ message: 'No puedes acceder a este cliente' });
+      return res.status(403).json({ message: req.__('customers.cannotAccessCustomer') });
     }
 
     res.json({
@@ -69,7 +69,7 @@ async function update(req, res, next) {
     }
 
     if (!canAccess(req, customer)) {
-      return res.status(403).json({ message: 'No puedes modificar este cliente' });
+      return res.status(403).json({ message: req.__('customers.cannotModifyCustomer') });
     }
 
     const changes = { ...req.body };

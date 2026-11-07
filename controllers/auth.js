@@ -7,7 +7,6 @@ const jwt = require('jsonwebtoken');
     // Never write in code the sensitive data
 const SECRET_KEY = config.get('auth.jwtSecret')
 
-//const INVALID_CREDENTIALS = {message: "Invalid credentials"};
 
 // agregado clase 17 de octubre
 function signToken(user){

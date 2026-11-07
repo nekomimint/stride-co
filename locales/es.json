@@ -10,7 +10,9 @@
 		"customerNotFound": "No se encontró al cliente",
 		"customerFound": "Cliente encontrado",
 		"customerUpdated": "Cliente actualizado",
-		"customerDeleted": "Cliente eliminado"
+		"customerDeleted": "Cliente eliminado",
+		"cannotAccessCustomer": "No puedes acceder a este cliente",
+		"cannotModifyCustomer": "No puedes modificar este cliente"
 	},
 	"inventory": {
 		"inventoryCreated": "Inventario del producto creado exitosamente",
@@ -28,7 +30,8 @@
 		"orderNotFound": "No se encontró la orden",
 		"orderFound": "Orden encontrada",
 		"orderUpdated": "Orden actualizada",
-		"orderDeleted": "Orden eliminada"
+		"orderDeleted": "Orden eliminada",
+		"orderNotInUser": "Esta orden no le pertenece al usuario actual"
 	},
 
 	"permission": {
@@ -64,7 +67,10 @@
 		"userNotFound": "Usuario no encontrado",
 		"userFound": "Usuario encontrado",
 		"userUpdated": "Usuario actualizado",
-		"userDeleted": "Usuario eliminado"
+		"userDeleted": "Usuario eliminado",
+		"cannotAccessUser": "No puedes acceder a este usuario",
+		"cannotModifyUser": "No puedes modificar este usuario",
+		"cannotDeleteUser": "No puedes eliminar este usuario"
 	},
 
 	"variant": {
@@ -93,7 +99,9 @@
 	"errors": {
 		"notFound": "No encontrado",
 		"forbidden": "Acceso denegado",
-		"internal": "Error interno del servidor"
+		"internal": "Error interno del servidor",
+		"noRole": "Sin rol asignado en el token",
+		"errorPermissions": "Error interno mientras se verificaban los permisos"
 	}
 	
 }
