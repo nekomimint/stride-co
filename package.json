@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production node ./bin/www",
-    "dev": "cross-env NODE_ENV=development supervisor ./bin/www",
-    "test": "jest",
+    "start": "NODE_ENV=production node ./bin/www",
+    "dev": "NODE_ENV=development supervisor ./bin/www",
+    "test": "NODE_ENV=test jest --testPathIgnorePatterns=/tests/e2e/",
     "test:e2e": "jest tests/e2e",
     "lint": "eslint .",
-    "seed": "cross-env NODE_ENV=development node seed.js"
+    "seed": "NODE_ENV=development node seed.js"
   },
   "dependencies": {
     "accesscontrol": "^2.2.1",
