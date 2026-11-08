@@ -83,8 +83,8 @@ describe('Users Resource & Scope Access Control (E2E)', () => {
     });
 
     it('GET /api/users/:id (Usuario Ajeno) debe responder 403 Forbidden al consultar un id ajeno', async () => {
-      // Jesus tiene id 3, mientras que Sofia tiene id 5
-      const alienUserId = 3;
+      // Jesus tiene id 1, mientras que Sofia tiene id 3
+      const alienUserId = 1;
 
       const response = await request
         .get(`/api/users/${alienUserId}`)
