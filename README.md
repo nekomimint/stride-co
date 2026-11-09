@@ -157,85 +157,6 @@ stride-co/
 
     15 minutos, quiere decir que hay 15 minutos disponibles desde que se hace un login para hacer peticiones o consultas en la API, una vez finalizan los 15 minutos cualquier intento dará como respuesta un mensaje de token expirado.
 
-
-## Internacionalización
-
-- La internacionalización se lleva a cabo mediante la librería i18N.
-  
-- Actualmente la internacionalización de la app web cuenta con 2 idiomas, inglés y español (en y es), siendo inglés el idioma por defecto.
-  
-- Para elegir el idioma a usar se deberán cambiar las cookies de idioma (lang), el método para hacerlo varía dependiendo de donde se esté usandola app:
-    
-    - Postman (agregar la cookie lang): Primero hay que añadir la cookie haciendo click en el botón "cookies" justo debajo del botón "send", en el menú que se despliega hay que hacer click en "add  new cookie" y reemplazar ```Cookie_1=value;``` por ```lang=en;``` o ```lang=es```, la cookie se guardará automáticamente.
-      
-    - Postman (Seleccionar idioma): Para cambiar de idioma modifica la cookie lang haciendo click al botón "cookies" y click a la cookie l"lang" que creamos anteriormente, aquí cambia el idioma de lang por el deseado, por ejemplo, para cambiar de inglés a español hay que cambiar ```lang=en;``` a ```lang=es```.
-      
-    - Navegador: Para cambiar de idioma en navegador hay que escribir ```?lang=<tu idioma como en o es>``` al final de la liga sin espacios, si no se escribe esta extensión la app se mostrará en inglés por ser el idioma por defecto.
-
-Cabe notar que no existe soporte para variaciones regionales de los idiomas, así que si en la cookie se escribe algo como lang=es-MX la app mostrará la versión básica del idioma que si es soportada.
-
-- Para agregar un nuevo idioma se deben de seguir una serie de pasos:
-    
-    - En config/i18n.js en la parte "locales" añadir letras representativas del idioma que se desee, por ejemplo "fr" para francés o "po" para portugués, estas letras servirán para saber el archivo json al cual la cookie deberá dirigirse, también se deberá actualizar el fallback agregando el nuevo idioma por ejemplo, escribir ```'po-*': 'po'``` para detectar cuando se escriba una variación del portugués como "po-BR" y redirigirlo al idioma básico.
-      
-    - Ahora hay que crear un nuevo archivo json en la carpeta "locales" utilizando las letras elegidas para representar nuestro idioma como nombre, siguiendo nuestro ejemplo el nombre del archivo sería "po.json".
-      
-    - Dentro del archivo json es donde se encuentran los textos traducidos y desde donde se cargan al resto del código, lo más simple sería copiar el contenido de uno de los archivos json ya existentes dentro de locales y solo reescribir los textos usando el idioma deseado, los textos se estructuran por grupos, los cuales contienen variables que representan los textos traducidos, el nombre de la variable es el texto entre " de la izquierda de los dos puntos y el texto traducido es el de la parte derecha, lo que se debe reescribir es el texto de la parte derecha de los dos puntos, una vez hecho esto solo hay que guardar el documento y los textos se cargarán cuando se cambie la cookie.
-      
-    - Para añadir nuevo texto hay que añadirlo primero a los archivos json en locales, ya sea añadiendo una nueva variable de texto a algún grupo o creando un nuevo grupo con nuevas variables de texto, y traducirlo al idioma respectivo de cada archivo, hay que procurar que todos los archivos json queden parejos (es decir con las mismas variables), luego hay que llamar al texto en donde se necesite colocando esta estructura ```req.__('<Nombre del grupo del texto>.<Nombre de la variable del texto>')``` en donde se devuelva un json, después del message. 
-
-## Configuracion y Secretos
-### Config - Cargado de variables de entorno
-Para utilizar la aplicacion y hacer su despliegue se hacen uso de secretos y variables de entorno mediante la libreria ```config```.
-La configuracion de variables de entorno pasa de ser en archivo ```.env``` multiples archivos que configuran cada entorno de ejecución, ```production```, ```development``` y ```test```.
-Estructura de archivos
-```
-stride-co/
-├── bin/
-├── config/
-│   ├──custom-environment-variables.json
-│   ├──default.json
-│   ├──local-development-example.json
-│   ├──local-development.json
-│   ├──local-production.json
-│   ├──production.json
-│   ├──test.json
-... └── ...
-```
-Cada archivo proporciona diferentes variables y permite la separacion de responsabilidades, descentralizando los valores con los que se trabajan.
-### Secuencia de registro/mapeo de variables
-La manera ne la que trabaja config es que lee el archivo con menor prioridad y guarda sus datos, una vez hecho lee el siguente archivo que dependera de nuestra variable de ejecucion (```NODE_ENV=production||development||test```), los valores mapeados (entendiendo mapeado como declarados en el archivo ```.JSON```) se sobreescribiran en el archivo final.
-#### Orden de ejecucion (```NODE_ENV=development```)
-```default.json``` -> ```development.json``` -> ```local-development.json``` -> ```custom-environment-variables.json```.
-
-Esto se aplica en cada entorno: 
-
-```default.json``` -> ```production.json``` -> ```local-production.json``` -> ```custom-environment-variables.json```.
-
-```default.json``` -> ```test.json``` -> ```custom-environment-variables.json```.
-
-De esta manera podemos tener diferentes conexiones, nombres de bases de datos y ejecuciones en un solo proyecto sin necesidad de declarar muchisimas variables de entorno en un ```.env``` y cargarlo segun una de ellas.
-
-### Secretos - Render
-Los archivos secretos contienen informacion que nadie deberia conocer, se agrega al ```.gitignore``` para evitar la filtracion igual en el ```.dockerignore``` para no filtrar informacion sensible en la imagen generada.
-
-La forma de cargar secretos en Render es accediendo al Dashboard de nuestro deploy e ingresar a la seccion "Environment" (Entorno). Dentro encontraremos dos cuadrados los cuales son las secciones de "Environment Variables" y "Secrets Files".
-#### Environment Variables
-Al presionar el boton de "Edit" podremos agregar las variables de entorno que ocupemos para poner en produccion nuestra aplicación.
-[![0eZD75at9X](https://yourimageshare.com/ib/0eZD75at9X.png)](https://yourimageshare.com/ib/0eZD75at9X)
-Una vez agregadas nuestras variables de entorno podremos guardarlas y re-desplegar nuestra aplicación con la nueva configuración.
-
-Redner terminara ejecutando ```NODE_ENV=<value> PORT=<value> npm start```.
-#### Secretos
-Con los secretos, exactamente el mismo procedimiento pero ahora en la seccion de "Secret Files", en el botón "Edit" nos permitira agregar archivos, pero no subirlo si no que hay que especificar su nombre, extension y despues pegar el contenido dentro. En ningun momento se deben subir archivos de manera automatica.
-[![N2tsMTRBAP](https://yourimageshare.com/ib/N2tsMTRBAP.png)](https://yourimageshare.com/ib/N2tsMTRBAP)
-De la misma manera, guardar y re-desplegar la aplicación.
-#### Uso de secretos
-Por defecto, Render subira nuestros secretos a ```/etc/secrets/<filename>```, no podremos elegir donde ubicarlos, y como vimos, config ocupa que el archivo local-production.json detro de su propia carpeta, por lo que tendremos que especificar en el ```Dockerfile``` un comando para copiar el archivo en el arranque de la aplicación.
-```shell
-CMD ["sh", "-c", "cp /etc/secrets/local-production.json config/local-production.json && exec npm start"]
-```
-Podremos ver como hacemos copiado manualmente del archivo de la ruta predeterminada a nuestro directorio especificado, con esto la aplicación ya se encuentra lista para el despliegue.
 ## Instalación desde cero
 
 ### Requisitos
@@ -530,6 +451,59 @@ Cabe notar que no existe soporte para variaciones regionales de los idiomas, as�
       
     - Para añadir nuevo texto hay que añadirlo primero a los archivos json en locales, ya sea añadiendo una nueva variable de texto a algún grupo o creando un nuevo grupo con nuevas variables de texto, y traducirlo al idioma respectivo de cada archivo, hay que procurar que todos los archivos json queden parejos (es decir con las mismas variables), luego hay que llamar al texto en donde se necesite colocando esta estructura ```req.__('<Nombre del grupo del texto>.<Nombre de la variable del texto>')``` en donde se devuelva un json, después del message. 
 
+
+## Configuracion y Secretos
+### Config - Cargado de variables de entorno
+Para utilizar la aplicacion y hacer su despliegue se hacen uso de secretos y variables de entorno mediante la libreria ```config```.
+La configuracion de variables de entorno pasa de ser en archivo ```.env``` multiples archivos que configuran cada entorno de ejecución, ```production```, ```development``` y ```test```.
+Estructura de archivos
+```
+stride-co/
+├── bin/
+├── config/
+│   ├──custom-environment-variables.json
+│   ├──default.json
+│   ├──local-development-example.json
+│   ├──local-development.json
+│   ├──local-production.json
+│   ├──production.json
+│   ├──test.json
+... └── ...
+```
+Cada archivo proporciona diferentes variables y permite la separacion de responsabilidades, descentralizando los valores con los que se trabajan.
+### Secuencia de registro/mapeo de variables
+La manera ne la que trabaja config es que lee el archivo con menor prioridad y guarda sus datos, una vez hecho lee el siguente archivo que dependera de nuestra variable de ejecucion (```NODE_ENV=production||development||test```), los valores mapeados (entendiendo mapeado como declarados en el archivo ```.JSON```) se sobreescribiran en el archivo final.
+#### Orden de ejecucion (```NODE_ENV=development```)
+```default.json``` -> ```development.json``` -> ```local-development.json``` -> ```custom-environment-variables.json```.
+
+Esto se aplica en cada entorno: 
+
+```default.json``` -> ```production.json``` -> ```local-production.json``` -> ```custom-environment-variables.json```.
+
+```default.json``` -> ```test.json``` -> ```custom-environment-variables.json```.
+
+De esta manera podemos tener diferentes conexiones, nombres de bases de datos y ejecuciones en un solo proyecto sin necesidad de declarar muchisimas variables de entorno en un ```.env``` y cargarlo segun una de ellas.
+
+### Secretos - Render
+Los archivos secretos contienen informacion que nadie deberia conocer, se agrega al ```.gitignore``` para evitar la filtracion igual en el ```.dockerignore``` para no filtrar informacion sensible en la imagen generada.
+
+La forma de cargar secretos en Render es accediendo al Dashboard de nuestro deploy e ingresar a la seccion "Environment" (Entorno). Dentro encontraremos dos cuadrados los cuales son las secciones de "Environment Variables" y "Secrets Files".
+#### Environment Variables
+Al presionar el boton de "Edit" podremos agregar las variables de entorno que ocupemos para poner en produccion nuestra aplicación.
+[![0eZD75at9X](https://yourimageshare.com/ib/0eZD75at9X.png)](https://yourimageshare.com/ib/0eZD75at9X)
+Una vez agregadas nuestras variables de entorno podremos guardarlas y re-desplegar nuestra aplicación con la nueva configuración.
+
+Redner terminara ejecutando ```NODE_ENV=<value> PORT=<value> npm start```.
+#### Secretos
+Con los secretos, exactamente el mismo procedimiento pero ahora en la seccion de "Secret Files", en el botón "Edit" nos permitira agregar archivos, pero no subirlo si no que hay que especificar su nombre, extension y despues pegar el contenido dentro. En ningun momento se deben subir archivos de manera automatica.
+[![N2tsMTRBAP](https://yourimageshare.com/ib/N2tsMTRBAP.png)](https://yourimageshare.com/ib/N2tsMTRBAP)
+De la misma manera, guardar y re-desplegar la aplicación.
+#### Uso de secretos
+Por defecto, Render subira nuestros secretos a ```/etc/secrets/<filename>```, no podremos elegir donde ubicarlos, y como vimos, config ocupa que el archivo local-production.json detro de su propia carpeta, por lo que tendremos que especificar en el ```Dockerfile``` un comando para copiar el archivo en el arranque de la aplicación.
+```shell
+CMD ["sh", "-c", "cp /etc/secrets/local-production.json config/local-production.json && exec npm start"]
+```
+Podremos ver como hacemos copiado manualmente del archivo de la ruta predeterminada a nuestro directorio especificado, con esto la aplicación ya se encuentra lista para el despliegue.
 
 ## Pruebas
 El proyecto cuenta con una suite automatizada construida sobre Jest y Supertest para garantizar el correcto funcionamiento de los controladores, middlewares y reglas de negocio de la API REST. Las pruebas están divididas en dos modalidades:
