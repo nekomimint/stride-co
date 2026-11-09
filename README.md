@@ -169,11 +169,10 @@ stride-co/
 
 ## Control de acceso basado en roles
 
-
 #### Roles utilizados
-* **`admin`**: Administrador con acceso global a todos los recursos y operaciones.
-* **`sales`**: Vendedor puede ver productos y consultar órdenes generales o propias.
-* **`user`**: Usuario solo puede gestionar únicamente sus propias órdenes.
+* **`admin`**: Administrador con acceso global a todos los recursos y operaciones (incluye la gestión de usuarios, roles y permisos).
+* **`sales`**: Vendedor. Puede ver productos, variantes e inventario; crear y consultar órdenes (de cualquier cliente o propias); crear, ver y editar clientes; y ver y editar su propio perfil. No puede eliminar recursos ni administrar usuarios, roles o permisos.
+* **`user`**: Usuario final. Puede ver productos y variantes, crear, ver y editar únicamente sus propias órdenes, y ver y editar su propio perfil y su propio cliente.
 
 ### Convención utilizada para Permission.key
 
@@ -181,8 +180,8 @@ Los permisos siguen una estructura sencilla que consta de tres partes separadas 
 
 `recurso:accion:posesion`
 
-* **Recurso:** Es el módulo (por ejemplo `products`).
-* **Acción:** Lo que se quiere hacer (por ejemplo `create`, `read`, `update`, `delete`).
+* **Recurso:** Es el módulo (por ejemplo `products`, `orders`, `users`, `variants`, `inventory`, `customers`, `roles`, `permissions`).
+* **Acción:** Lo que se quiere hacer (por ejemplo `create`, `read`, `update`, `delete`). En `roles` y `permissions` se usan además `manage` (crear, editar y eliminar) y `assign` (asignar roles a usuarios).
 * **Posesión:** El alcance del permiso (`any` para cualquier registro o `own` solo para los propios).
 
 
@@ -195,32 +194,91 @@ Los permisos siguen una estructura sencilla que consta de tres partes separadas 
 * **`products:delete:any`**: Eliminar productos.
 
 ##### Orders
-* **`orders:create:any`**: Crear órdenes.
+* **`orders:create:any`**: Crear órdenes para cualquiera.
+* **`orders:create:own`**: Crear órdenes propias.
 * **`orders:read:any`**: Ver todas las órdenes de forma global.
 * **`orders:read:own`**: Ver únicamente las órdenes propias.
 * **`orders:update:own`**: Editar únicamente las órdenes propias.
 
 ##### Users
-* **`users:read:any`**: Ver listado y detalles de usuarios.
-* **`users:update:any`**: Editar información de usuarios.
+* **`users:create:any`**: Crear usuarios.
+* **`users:read:any`**: Ver listado y detalles de todos los usuarios.
+* **`users:read:own`**: Ver el perfil propio.
+* **`users:update:any`**: Editar la información de cualquier usuario.
+* **`users:update:own`**: Editar el perfil propio.
+* **`users:delete:any`**: Eliminar usuarios.
+
+##### Variants
+* **`variants:create:any`**: Crear variantes.
+* **`variants:read:any`**: Ver variantes.
+* **`variants:update:any`**: Editar variantes.
+* **`variants:delete:any`**: Eliminar variantes.
+
+##### Inventory
+* **`inventory:create:any`**: Crear inventario.
+* **`inventory:read:any`**: Ver inventario.
+* **`inventory:update:any`**: Editar inventario.
+* **`inventory:delete:any`**: Eliminar inventario.
+
+##### Customers
+* **`customers:create:any`**: Crear clientes.
+* **`customers:read:any`**: Ver todos los clientes.
+* **`customers:read:own`**: Ver el cliente propio.
+* **`customers:update:any`**: Editar cualquier cliente.
+* **`customers:update:own`**: Editar el cliente propio.
+* **`customers:delete:any`**: Eliminar clientes.
+
+##### Roles
+* **`roles:read:any`**: Ver roles.
+* **`roles:manage:any`**: Gestionar roles (crear, editar, eliminar).
+* **`roles:assign:any`**: Asignar roles a usuarios.
+
+##### Permissions
+* **`permissions:read:any`**: Ver permisos.
+* **`permissions:manage:any`**: Gestionar permisos.
 
 ### Matriz RBAC
 
-| Permiso (`Permission.key`) | Descripción | Admin | Sales  | User  |
+| Permiso (`Permission.key`) | Descripción | Admin | Sales | User |
 | :--- | :--- | :---: | :---: | :---: |
 | **`products:create:any`** | Crear productos | Sí | - | - |
-| **`products:read:any`** | Ver productos | Sí | Sí | - |
+| **`products:read:any`** | Ver productos | Sí | Sí | Sí |
 | **`products:update:any`** | Editar productos | Sí | - | - |
 | **`products:delete:any`** | Eliminar productos | Sí | - | - |
-| **`orders:create:any`** | Crear órdenes | Sí | Sí | Sí |
+| **`orders:create:any`** | Crear órdenes para cualquiera | Sí | Sí | - |
+| **`orders:create:own`** | Crear órdenes propias | Sí | - | Sí |
 | **`orders:read:own`** | Ver órdenes propias | Sí | Sí | Sí |
 | **`orders:read:any`** | Ver todas las órdenes | Sí | Sí | - |
-| **`orders:update:own`** | Editar órdenes propias | Sí | - | Sí |
-| **`users:read:any`** | Ver usuarios | Sí | - | - |
-| **`users:update:any`** | Editar usuarios | Sí | - | - |
+| **`orders:update:own`** | Editar órdenes propias | Sí | Sí | Sí |
+| **`users:create:any`** | Crear usuarios | Sí | - | - |
+| **`users:read:any`** | Ver todos los usuarios | Sí | - | - |
+| **`users:read:own`** | Ver perfil propio | Sí | Sí | Sí |
+| **`users:update:any`** | Editar cualquier usuario | Sí | - | - |
+| **`users:update:own`** | Editar perfil propio | Sí | Sí | Sí |
+| **`users:delete:any`** | Eliminar usuarios | Sí | - | - |
+| **`variants:read:any`** | Ver variantes | Sí | Sí | Sí |
+| **`variants:create:any`** | Crear variantes | Sí | - | - |
+| **`variants:update:any`** | Editar variantes | Sí | - | - |
+| **`variants:delete:any`** | Eliminar variantes | Sí | - | - |
+| **`inventory:read:any`** | Ver inventario | Sí | Sí | - |
+| **`inventory:create:any`** | Crear inventario | Sí | - | - |
+| **`inventory:update:any`** | Editar inventario | Sí | - | - |
+| **`inventory:delete:any`** | Eliminar inventario | Sí | - | - |
+| **`customers:create:any`** | Crear clientes | Sí | Sí | - |
+| **`customers:read:any`** | Ver todos los clientes | Sí | Sí | - |
+| **`customers:read:own`** | Ver cliente propio | Sí | Sí | Sí |
+| **`customers:update:any`** | Editar cualquier cliente | Sí | Sí | - |
+| **`customers:update:own`** | Editar cliente propio | Sí | Sí | Sí |
+| **`customers:delete:any`** | Eliminar clientes | Sí | - | - |
+| **`roles:read:any`** | Ver roles | Sí | - | - |
+| **`roles:manage:any`** | Gestionar roles (crear, editar, eliminar) | Sí | - | - |
+| **`roles:assign:any`** | Asignar roles a usuarios | Sí | - | - |
+| **`permissions:read:any`** | Ver permisos | Sí | - | - |
+| **`permissions:manage:any`** | Gestionar permisos | Sí | - | - |
 
-### Enpoints protegidos
-`productos`, `orders` y `users`
+
+### Endpoints protegidos
+`products`, `orders`, `users`, `variants`, `inventory`, `customers`, `roles`, `permissions`
 
 ### Ejemplo de permiso any
 
@@ -229,7 +287,8 @@ Pensada para el administrador, el cual puede eliminar cualquier recurso:
 ```javascript
 /* DELETE product by id (DELETE ANY - Solo Admin) */
 router.delete('/:id', authorize('products', 'delete', 'any'), log('Deleting product'), controller.destroy);
-``` 
+```
+
 ### Ejemplo de permiso own
 
 Pensada para que el usuario autenticado solo pueda consultar o gestionar sus propios registros:
@@ -241,7 +300,37 @@ router.get('/:id', authorize('orders', 'read', 'own'), log('Searching order by i
 
 ### Como se obtiene la configuración de permisos desde la base de datos
 
-En el archivo `seed_rbac.sql` se realizan las inserciones a las tres tablas de nuestra base de datos: `roles`, `permissions` y `role_permissions`. Dentro de estas tablas hemos definido quién puede hacer qué. Luego, cuando el cliente hace una petición a una ruta protegida, es el middleware `authorize` el que se encarga de verificar quién está ejecutando la acción (saberlo gracias al JWT y a `req.auth`), consultar la configuración de permisos y confirmar que tenga asignado dicho permiso.
+Con el archivo `seed.js` se realizan las inserciones a las tres tablas de nuestra base de datos: `roles`, `permissions` y `role_permissions`. Dentro de estas tablas hemos definido quién puede hacer qué (34 permisos en total, asignados a los roles `admin`, `sales` y `user` según la matriz RBAC). Luego, cuando el cliente hace una petición a una ruta protegida, es el middleware `authorize` el que se encarga de verificar quién está ejecutando la acción (lo sabe gracias al JWT y a `req.auth`), consulta la configuración de permisos y confirmar que tenga asignado dicho permiso.
+
+
+
+## API PÚBLICA
+### URL PUBLICA 
+https://stride-co-drfc.onrender.com/
+### HEALTH CHECK
+aqui va la url del health check ? o a que se refiere con GET /Health?
+
+### Usuarios de demostración
+Creados por `npm run seed`. Las contraseñas son exclusivas de estas cuentas
+y no se reutilizan en ningún otro lugar.
+ 
+| Rol   | Nombre         | Correo          | Contraseña |
+|-------|----------------|-----------------|------------|
+| admin | Jesus Vill     | jesus@gmail.com | admin123   |
+| sales | Dany Martinez  | dany@gmail.com  | sales123   |
+| user  | Sofia Rivero   | sofia@gmail.com | usuario123 |
+
+### Ejemplo de uso
+
+### Render PostgresSQL (pendiende)
+Fecha de creación: 
+
+### MongoDB Atlas (pendiente)
+provedor y region del cluster, como se configuro Network Access
+
+### Secretos (pendiente)
+como se entrega config/local-production.json a Render (sin valores reales)
+
 
 ## Autores
 
