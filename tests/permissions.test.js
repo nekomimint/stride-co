@@ -1,57 +1,54 @@
-describe.skip('permisionsController', () => {
-    let permissionsController;
-    let req;
-    let res;
+/* global describe, test, expect, jest, beforeEach, afterEach */
+const request = require('supertest');
+const app = require('../app');
+const { Permission, Role } = require('../models/relationals');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
-    beforeEach(() => {
-        // para borrar la lista cada inicia una prueba
-        jest.resetModules();
-        permissionsController = require('../controllers/permissions');
+jest.setTimeout(30000);
 
-        // estas estructuras nos sirven para poder simular
-        // los objetos que van a representar el request y  el response
-        req = { params: {}, body: {} };
-        res = {status: jest.fn().mockReturnThis(),json: jest.fn() };
-    });
+const secretKey = config.has('auth.jwtSecret')
+  ? config.get('auth.jwtSecret')
+  : (config.has('jwt.secret') ? config.get('jwt.secret') : 'test-secret');
 
-   test.skip('listar permisos', () => {
-        permissionsController.list(req, res);
+const mockAdminToken = jwt.sign(
+  { sub: '1', id: 1, role: 'ADMIN' },
+  secretKey,
+  { algorithm: 'HS256' }
+);
 
-        // tenemos que obtener todo lo que haya:
-        expect(res.json).toHaveBeenCalledWith({
-            message: "Lista de permisos",
-            data: [
-                {
-                    id: 1,
-                    name: "users.read",
-                    description: "Permiso para consultar usuarios"
-                },
-                {
-                    id: 2,
-                    name: "users.create",
-                    description: "Permiso para crear usuarios"
-                }
-            ]
-        });
-    });
+describe('Suite de Permisos con Mocks (tests/permissions.test.js)', () => {
+  beforeEach(() => {
+    jest.spyOn(Role, 'findAll').mockResolvedValue([
+      {
+        toJSON: () => ({
+          name: 'ADMIN',
+          permissions: [
+            { key: 'permissions:read:any' }
+          ]
+        })
+      }
+    ]);
+  });
 
-    test.skip('obtener permiso por id', () => {
-        
-        req.params = { id: 1 };
-        permissionsController.find(req, res);
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
-        // lo que obtenemos tiene que tener esta estructura:
-        expect(res.json).toHaveBeenCalledWith({
-            message: "permisos por id",
-            data: {
-                id: 1,
-                name: "users.read",
-                description: "Permiso para consultar usuarios"
-            }
-        });
-    });
+  test('GET /api/permissions debe retornar la lista de permisos (200)', async () => {
+    const mockPermissionsList = [
+      { id: 1, key: 'products:read:any', description: 'Leer productos' },
+      { id: 2, key: 'users:create:any', description: 'Crear usuarios' }
+    ];
+
+    jest.spyOn(Permission, 'findAll').mockResolvedValue(mockPermissionsList);
+
+    const res = await request(app)
+      .get('/api/permissions')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data[0].key).toBe('products:read:any');
+  });
 });
-
-
-
-  

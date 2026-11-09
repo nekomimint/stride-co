@@ -1,145 +1,73 @@
-// definimos el conjunto de pruebas para roles
+/* global describe, test, expect, jest, beforeEach, afterEach */
+const request = require('supertest');
+const app = require('../app');
+const { Role } = require('../models/relationals');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
-describe.skip('rolesController', () => {
-  let rolesController;
-  let req;
-  let res;
+jest.setTimeout(30000);
 
+const secretKey = config.has('auth.jwtSecret')
+  ? config.get('auth.jwtSecret')
+  : (config.has('jwt.secret') ? config.get('jwt.secret') : 'test-secret');
+
+const mockAdminToken = jwt.sign(
+  { sub: '1', id: 1, role: 'ADMIN' },
+  secretKey,
+  { algorithm: 'HS256' }
+);
+
+// Helper para envolver objetos planos con .toJSON() para que Sequelize y config/rbac.js no fallen
+const createMockRole = (id, name, description, permissions = []) => ({
+  id,
+  name,
+  description,
+  permissions,
+  toJSON: function () {
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      permissions: this.permissions
+    };
+  }
+});
+
+describe('Suite de Roles con Mocks (tests/roles.test.js)', () => {
   beforeEach(() => {
-    // para borrar la lista cada inicia una prueba
-    jest.resetModules();
-    rolesController = require('../controllers/roles');
-
-    // estas estructuras nos sirven para poder simular
-    // los objetos que van a representar el request y el response
-    req = { params: {}, body: {} };
-    res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+    // Garantizamos que AccessControl SIEMPRE encuentre el rol ADMIN con los permisos de la ruta
+    jest.spyOn(Role, 'findAll').mockResolvedValue([
+      createMockRole(1, 'ADMIN', 'Administrador general', [
+        { key: 'roles:read:any' },
+        { key: 'roles:create:any' },
+        { key: 'roles:update:any' },
+        { key: 'roles:delete:any' }
+      ]),
+      createMockRole(2, 'USER', 'Usuario estándar', [])
+    ]);
   });
 
-  test.skip('crear un rol', () => {
-    req.body = {
-      name: "Administrador",
-      description: "Rol con permisos administrativos"
-    };
-
-    rolesController.create(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Rol creado",
-      data: {
-        id: 1,
-        name: "Administrador",
-        description: "Rol con permisos administrativos"
-      }
-    });
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
-  test.skip('listar todos los roles', () => {
-    // creamos dos roles primero para llenar la lista
-    req.body = {
-      name: "Administrador",
-      description: "Rol con permisos administrativos"
-    };
+  test('GET /api/roles debe retornar la lista de roles (200)', async () => {
+    const res = await request(app)
+      .get('/api/roles')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    rolesController.create(req, res);
-
-    req.body = {
-      name: "Usuario",
-      description: "Rol para usuarios normales"
-    };
-
-    rolesController.create(req, res);
-
-    // Ejecutamos list()
-    rolesController.list(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Role list",
-      data: [
-        {
-          id: 1,
-          name: "Administrador",
-          description: "Rol con permisos administrativos"
-        },
-        {
-          id: 2,
-          name: "Usuario",
-          description: "Rol para usuarios normales"
-        }
-      ]
-    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data[0].name).toBe('ADMIN');
   });
 
-  test.skip('obtener un rol por id', () => {
-    req.body = {
-      name: "Administrador",
-      description: "Rol con permisos administrativos"
-    };
+  test('GET /api/roles/:id debe responder 404 si el rol no existe', async () => {
+    jest.spyOn(Role, 'findByPk').mockResolvedValue(null);
 
-    rolesController.create(req, res);
+    const res = await request(app)
+      .get('/api/roles/999')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    req.params = { id: "1" };
-
-    // llamamos al get de roles, o sea nuestra funcion find
-    rolesController.find(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Rol por id",
-      data: {
-        id: 1,
-        name: "Administrador",
-        description: "Rol con permisos administrativos"
-      }
-    });
-  });
-
-  test.skip('actualizar un rol', () => {
-    req.body = {
-      name: "Administrador",
-      description: "Rol con permisos administrativos"
-    };
-
-    rolesController.create(req, res);
-
-    req.params = { id: "1" };
-
-    req.body = {
-      name: "Administrador Updated"
-    };
-
-    // llamamos a nuestra funcion update y le pasamos el request simulado
-    rolesController.update(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "se ha actualizado el rol",
-      data: {
-        id: 1,
-        name: "Administrador Updated",
-        description: "Rol con permisos administrativos"
-      }
-    });
-  });
-
-  test.skip('eliminar un rol', () => {
-    req.body = {
-      name: "Administrador",
-      description: "Rol con permisos administrativos"
-    };
-
-    rolesController.create(req, res);
-
-    req.params = { id: "1" };
-
-    // igual llamamos a nuestra funcion delete y le pasamos nuestro request que simulamos
-    rolesController.destroy(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Se ha eliminado el rol",
-      data: {
-        id: 1,
-        name: "Administrador",
-        description: "Rol con permisos administrativos"
-      }
-    });
+    expect(res.statusCode).toBe(404);
   });
 });

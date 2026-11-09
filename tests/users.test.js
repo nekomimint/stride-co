@@ -1,124 +1,73 @@
-// definimos el conjunto de pruebas para usuario s
-describe('usersController', () => {
-  let usersController;
-  let req;
-  let res;
+/* global describe, test, expect, jest, beforeEach, afterEach */
+const request = require('supertest');
+const app = require('../app');
+const { User, Role } = require('../models/relationals');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
+jest.setTimeout(30000);
+
+const secretKey = config.has('auth.jwtSecret')
+  ? config.get('auth.jwtSecret')
+  : (config.has('jwt.secret') ? config.get('jwt.secret') : 'test-secret');
+
+const mockAdminToken = jwt.sign(
+  { 
+    sub: '1', 
+    id: 1, 
+    role: 'ADMIN',
+    permissions: ['users:read:any', 'users:read:own', 'users:update:any', 'users:delete:any']
+  },
+  secretKey,
+  { algorithm: 'HS256' }
+);
+
+describe('Suite de Usuarios con Mocks (tests/users.test.js)', () => {
   beforeEach(() => {
-    // para borrar la lista cada inicia una prueba
-    jest.resetModules();
-    usersController = require('../controllers/users');
-
-
-    // estas estructuras nos sirven para poder simular
-    // los objetos que van a representar el request y  el response
-    req = { params: {}, body: {} };
-    res = {status: jest.fn().mockReturnThis(),json: jest.fn() };
-
+    // mock de los roles en cada test para alimentar AccessControl RBAC antes de pasar por authorize
+    jest.spyOn(Role, 'findAll').mockResolvedValue([
+      {
+        toJSON: () => ({
+          name: 'ADMIN',
+          permissions: [
+            { key: 'users:read:any' },
+            { key: 'users:read:own' },
+            { key: 'users:create:any' },
+            { key: 'users:update:any' },
+            { key: 'users:delete:any' }
+          ]
+        })
+      }
+    ]);
   });
 
-  test.skip('crear un usuario', () => 
-    {
-    req.body = { name: "Sofia", email: "sofia@gmail.com"
-
-    };
-
-    usersController.create(req, res);
-
-    // en  res.json.mock.calls[0][0] se encuentra el objeto recibido 
-    // en la respuesta res.json(), esto gracias a jest.fn()
-
-    //dentro de .mock se encuentra un arreglo llamado calls, 
-    //su trabajo es guardar el historial completo de llamadas que ha recibido esa función durante la prueba.
-
-    const response = res.json.mock.calls[0][0];
-
-    expect(response.data).toMatchObject({
-      name: "Sofia",
-      email: "sofia@gmail.com"
-    });
-    expect(response.data.id).toBeDefined();
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
-  test.skip('listar todos los usuarios', () => {
-    // creamos dos usuarios primero para llenar la lista
-    req.body = { name: "Amir", email: "amir@gmail.com" };
-    usersController.create(req, res);
+  test('GET /api/users debe listar los usuarios (200)', async () => {
+    const mockUsers = [
+      { id: 1, first_name: 'Juan', last_name: 'Pérez', email: 'juan@example.com', role: { name: 'ADMIN' } }
+    ];
 
-    req.body = { name: "Alan", email: "alan@gmail.com" };
-    usersController.create(req, res);
+    jest.spyOn(User, 'findAll').mockResolvedValue(mockUsers);
 
-    // Ejecutamos list()
-    usersController.list(req, res);
+    const res = await request(app)
+      .get('/api/users')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    // la respuesta que de nuestra funcion list estara en [call.length-1] 
-    // (la ultima respuesta)
-    const calls = res.json.mock.calls;
-    const response = calls[calls.length - 1][0];
-
-    expect(response.data).toHaveLength(2);
-    expect(response.data[0]).toMatchObject({ name: "Amir" });
-    expect(response.data[1]).toMatchObject({ name: "Alan" });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data[0].first_name).toBe('Juan');
   });
 
+  test('GET /api/users/:id debe responder 404 si el usuario no existe', async () => {
+    jest.spyOn(User, 'findByPk').mockResolvedValue(null);
 
-  test.skip('obtener un usuario por id', () => 
-    {
-    req.body = { name: "Sofia", email: "sofia@gmail.com" };
-    usersController.create(req, res);
+    const res = await request(app)
+      .get('/api/users/999')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    req.params = { id: "1" };
-    // llamamos al get de users, o sea nuestra funcion find
-    usersController.find(req, res);
-
-    const calls = res.json.mock.calls;
-    const response = calls[calls.length - 1][0];
-
-    expect(response.data).toMatchObject({
-      id: 1,
-      name: "Sofia",
-      email: "sofia@gmail.com"
-    });
-  });
-
-  test.skip('actualizar un usuario', () => {
-    req.body = { name: "Sofia", email: "sofia@gmail.com" };
-    usersController.create(req, res);
-
-    req.params = { id: "1" };
-    req.body = { name: "Sofia Updated" };
-    // llamamos a nuestra funcion update y le pasamos el request simulado
-    usersController.update(req, res);
-
-    const calls = res.json.mock.calls;
-    const response = calls[calls.length - 1][0];
-
-    expect(response.data).toMatchObject({
-      id: 1,
-      name: "Sofia Updated",
-      email: "sofia@gmail.com"
-    });
-  });
-
-  test.skip('eliminar un usuario', () => {
-    req.body = { name: "Sofia", email: "sofia@gmail.com" };
-    usersController.create(req, res);
-
-    req.params = { id: "1" };
-     // igual llamamos a nuestra funcion delete y le pasamos nuestr request que simulamos
-    usersController.destroy(req, res);
-
-    const calls = res.json.mock.calls;
-    const response = calls[calls.length - 1][0];
-
-    // verificamos que lo que regresa, o sea lo que borro, sea igual a lo que queriamos borrar
-    expect(response.data).toMatchObject({
-      id: 1,
-      name: "Sofia",
-      email: "sofia@gmail.com"
-    });
+    expect(res.statusCode).toBe(404);
   });
 });
-
-
-  

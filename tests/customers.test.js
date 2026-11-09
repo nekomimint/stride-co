@@ -1,145 +1,66 @@
-// definimos el conjunto de pruebas para clientes
+/* global describe, test, expect, jest, beforeEach, afterEach */
+const request = require('supertest');
+const app = require('../app');
+const { Customer } = require('../models/documents');
+const { Role } = require('../models/relationals');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
-describe('customersController', () => {
-  let customersController;
-  let req;
-  let res;
+jest.setTimeout(30000);
 
+const secretKey = config.has('auth.jwtSecret')
+  ? config.get('auth.jwtSecret')
+  : (config.has('jwt.secret') ? config.get('jwt.secret') : 'test-secret');
+
+const mockAdminToken = jwt.sign(
+  { sub: '1', id: 1, role: 'ADMIN' },
+  secretKey,
+  { algorithm: 'HS256' }
+);
+
+describe('Suite de Clientes con Mocks MongoDB (tests/customers.test.js)', () => {
   beforeEach(() => {
-    // para borrar la lista cada inicia una prueba
-    jest.resetModules();
-    customersController = require('../controllers/customers');
-
-    // estas estructuras nos sirven para poder simular
-    // los objetos que van a representar el request y el response
-    req = { params: {}, body: {} };
-    res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-  });
-
-  test.skip('crear un cliente', () => {
-    req.body = {
-      name: "Sofia",
-      email: "sofia@gmail.com"
-    };
-
-    customersController.create(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Cliente creado",
-      data: {
-        id: 1,
-        name: "Sofia",
-        email: "sofia@gmail.com"
+    jest.spyOn(Role, 'findAll').mockResolvedValue([
+      {
+        toJSON: () => ({
+          name: 'ADMIN',
+          permissions: [
+            { key: 'customers:read:any' },
+            { key: 'customers:create:any' },
+            { key: 'customers:update:any' },
+            { key: 'customers:delete:any' }
+          ]
+        })
       }
-    });
+    ]);
   });
 
-  test.skip('listar todos los clientes', () => {
-    // creamos dos clientes primero para llenar la lista
-    req.body = {
-      name: "Sofia",
-      email: "sofia@gmail.com"
-    };
-
-    customersController.create(req, res);
-
-    req.body = {
-      name: "Carlos",
-      email: "carlos@gmail.com"
-    };
-
-    customersController.create(req, res);
-
-    // Ejecutamos list()
-    customersController.list(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Lista de clientes",
-      data: [
-        {
-          id: 1,
-          name: "Sofia",
-          email: "sofia@gmail.com"
-        },
-        {
-          id: 2,
-          name: "Carlos",
-          email: "carlos@gmail.com"
-        }
-      ]
-    });
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
-  test.skip('obtener un cliente por id', () => {
-    req.body = {
-      name: "Sofia",
-      email: "sofia@gmail.com"
-    };
+  test('GET /api/customers debe listar los clientes simulando Mongoose (200)', async () => {
+    const mockCustomers = [
+      { _id: '650c1f1e1c9d440000000001', userId: 1, phone: '6141234567' }
+    ];
+    jest.spyOn(Customer, 'find').mockResolvedValue(mockCustomers);
 
-    customersController.create(req, res);
+    const res = await request(app)
+      .get('/api/customers')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    req.params = { id: "1" };
-
-    // llamamos al get de customers, o sea nuestra funcion find
-    customersController.find(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Clientes por id",
-      data: {
-        id: 1,
-        name: "Sofia",
-        email: "sofia@gmail.com"
-      }
-    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data[0].phone).toBe('6141234567');
   });
 
-  test.skip('actualizar un cliente', () => {
-    req.body = {
-      name: "Sofia",
-      email: "sofia@gmail.com"
-    };
+  test('GET /api/customers/:id debe responder 404 si el cliente no existe', async () => {
+    jest.spyOn(Customer, 'findById').mockResolvedValue(null);
 
-    customersController.create(req, res);
+    const res = await request(app)
+      .get('/api/customers/650c1f1e1c9d440000000099')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    req.params = { id: "1" };
-
-    req.body = {
-      name: "Sofia Updated"
-    };
-
-    // llamamos a nuestra funcion update y le pasamos el request simulado
-    customersController.update(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Cliente actualizado",
-      data: {
-        id: 1,
-        name: "Sofia Updated",
-        email: "sofia@gmail.com"
-      }
-    });
-  });
-
-  test.skip('eliminar un cliente', () => {
-    req.body = {
-      name: "Sofia",
-      email: "sofia@gmail.com"
-    };
-
-    customersController.create(req, res);
-
-    req.params = { id: "1" };
-
-    // igual llamamos a nuestra funcion delete y le pasamos nuestro request que simulamos
-    customersController.destroy(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Cliente eliminado",
-      data: {
-        id: 1,
-        name: "Sofia",
-        email: "sofia@gmail.com"
-      }
-    });
+    expect(res.statusCode).toBe(404);
   });
 });

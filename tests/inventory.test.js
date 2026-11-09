@@ -1,145 +1,65 @@
-// definimos el conjunto de pruebas para inventario
+/* global describe, test, expect, jest, beforeEach, afterEach */
+const request = require('supertest');
+const app = require('../app');
+const Inventory = require('../models/relationals/Inventory');
+const { Role } = require('../models/relationals');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
-describe.skip('inventoryController', () => {
-  let inventoryController;
-  let req;
-  let res;
+jest.setTimeout(30000);
 
+const secretKey = config.has('auth.jwtSecret')
+  ? config.get('auth.jwtSecret')
+  : (config.has('jwt.secret') ? config.get('jwt.secret') : 'test-secret');
+
+const mockAdminToken = jwt.sign(
+  { sub: '1', id: 1, role: 'ADMIN' },
+  secretKey,
+  { algorithm: 'HS256' }
+);
+
+describe('Suite de Inventario con Mocks (tests/inventory.test.js)', () => {
   beforeEach(() => {
-    // para borrar la lista cada inicia una prueba
-    jest.resetModules();
-    inventoryController = require('../controllers/inventory');
-
-    // estas estructuras nos sirven para poder simular
-    // los objetos que van a representar el request y el response
-    req = { params: {}, body: {} };
-    res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-  });
-
-  test.skip('crear un item de inventario', () => {
-    req.body = {
-      productId: 1,
-      stock: 50
-    };
-
-    inventoryController.create(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "invetario craedo",
-      data: {
-        id: 1,
-        productId: 1,
-        stock: 50
+    jest.spyOn(Role, 'findAll').mockResolvedValue([
+      {
+        toJSON: () => ({
+          name: 'ADMIN',
+          permissions: [
+            { key: 'inventory:read:any' },
+            { key: 'inventory:update:any' }
+          ]
+        })
       }
-    });
+    ]);
   });
 
-  test.skip('listar todo el inventario', () => {
-    // creamos dos items primero para llenar la lista
-    req.body = {
-      productId: 1,
-      stock: 50
-    };
-
-    inventoryController.create(req, res);
-
-    req.body = {
-      productId: 2,
-      stock: 25
-    };
-
-    inventoryController.create(req, res);
-
-    // Ejecutamos list()
-    inventoryController.list(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Lista de inventario",
-      data: [
-        {
-          id: 1,
-          productId: 1,
-          stock: 50
-        },
-        {
-          id: 2,
-          productId: 2,
-          stock: 25
-        }
-      ]
-    });
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
-  test.skip('obtener un item de inventario por id', () => {
-    req.body = {
-      productId: 1,
-      stock: 50
-    };
+  test('GET /api/inventory debe retornar los registros de inventario (200)', async () => {
+    const mockInventoryList = [
+      { id: 1, variant_id: 1, stock_quantity: 50, reorder_level: 10 }
+    ];
 
-    inventoryController.create(req, res);
+    jest.spyOn(Inventory, 'findAll').mockResolvedValue(mockInventoryList);
 
-    req.params = { id: "1" };
+    const res = await request(app)
+      .get('/api/inventory')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    // llamamos al get de inventory, o sea nuestra funcion find
-    inventoryController.find(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Inventario por id",
-      data: {
-        id: 1,
-        productId: 1,
-        stock: 50
-      }
-    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data[0].stock_quantity).toBe(50);
   });
 
-  test.skip('actualizar un item de inventario', () => {
-    req.body = {
-      productId: 1,
-      stock: 50
-    };
+  test('GET /api/inventory/:id debe responder 404 si el registro no existe', async () => {
+    jest.spyOn(Inventory, 'findByPk').mockResolvedValue(null);
 
-    inventoryController.create(req, res);
+    const res = await request(app)
+      .get('/api/inventory/999')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    req.params = { id: "1" };
-
-    req.body = {
-      stock: 75
-    };
-
-    // llamamos a nuestra funcion update y le pasamos el request simulado
-    inventoryController.update(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Inventario actualizado",
-      data: {
-        id: 1,
-        productId: 1,
-        stock: 75
-      }
-    });
-  });
-
-  test.skip('eliminar un item de inventario', () => {
-    req.body = {
-      productId: 1,
-      stock: 50
-    };
-
-    inventoryController.create(req, res);
-
-    req.params = { id: "1" };
-
-    // igual llamamos a nuestra funcion delete y le pasamos nuestro request que simulamos
-    inventoryController.destroy(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Inventario eliminado",
-      data: {
-        id: 1,
-        productId: 1,
-        stock: 50
-      }
-    });
+    expect(res.statusCode).toBe(404);
   });
 });

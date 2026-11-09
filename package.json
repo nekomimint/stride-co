@@ -5,7 +5,8 @@
   "scripts": {
     "start": "NODE_ENV=production node ./bin/www",
     "dev": "NODE_ENV=development supervisor ./bin/www",
-    "test": "jest",
+    "test": "NODE_ENV=test jest --testPathIgnorePatterns=/tests/e2e/",
+    "test:e2e": "jest tests/e2e",
     "lint": "eslint .",
     "seed": "NODE_ENV=development node seed.js"
   },
@@ -34,6 +35,7 @@
     "@eslint/js": "^10.0.1",
     "cross-env": "^10.1.0",
     "jest": "^30.5.2",
+    "supertest": "^7.3.1",
     "supervisor": "^0.12.0"
   }
 }

@@ -1,145 +1,111 @@
-// definimos el conjunto de pruebas para productos
+/* global describe, test, expect, jest, afterEach, beforeAll */
+const request = require('supertest');
+const app = require('../app');
+const Product = require('../models/relationals/Product');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
-describe.skip('productsController', () => {
-  let productsController;
-  let req;
-  let res;
+// Subimos el timeout a 40 segundos para llamadas con latencia de red
+jest.setTimeout(40000);
 
-  beforeEach(() => {
-    // para borrar la lista cada inicia una prueba
-    jest.resetModules();
-    productsController = require('../controllers/products');
+const secretKey = config.has('jwt.secret') ? config.get('jwt.secret') : (process.env.SECRET_KEY || 'LAPATATAPATA');
+const mockAdminToken = jwt.sign(
+  { 
+    sub: 1, 
+    id: 1, 
+    user: 'adminUser', 
+    role: 'admin', 
+    permissions: ['products:read:any', 'products:create:any', 'products:update:any', 'products:delete:any'] 
+  },
+  secretKey,
+  { algorithm: 'HS256' }
+);
 
-    // estas estructuras nos sirven para poder simular
-    // los objetos que van a representar el request y el response
-    req = { params: {}, body: {} };
-    res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+describe('Suite de Productos con Mocks (Sequelize)', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
-  test.skip('crear un producto', () => {
-    req.body = {
-      name: "Tenis Nike Air",
-      price: 2500
-    };
+  test('POST /api/products debe crear un producto simulando Sequelize (201)', async () => {
+    const newProduct = { id: 1, name: 'Tenis Nike Air', price: 2500, category_id: 1 };
+    jest.spyOn(Product, 'create').mockResolvedValue(newProduct);
 
-    productsController.create(req, res);
+    const res = await request(app)
+      .post('/api/products')
+      .set('Authorization', `Bearer ${mockAdminToken}`)
+      .send({ name: 'Tenis Nike Air', price: 2500, category_id: 1 });
 
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Producto creado",
-      data: {
-        id: 1,
-        name: "Tenis Nike Air",
-        price: 2500
-      }
-    });
+    expect(res.statusCode).toBe(201);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data.name).toBe('Tenis Nike Air');
   });
 
-  test.skip('listar todos los productos', () => {
-    // creamos dos productos primero para llenar la lista
-    req.body = {
-      name: "Tenis Nike Air",
-      price: 2500
-    };
+  test('GET /api/products debe listar todos los productos con sus variantes (200)', async () => {
+    const mockProductsList = [
+      { id: 1, name: 'Tenis Nike Air', price: 2500, variants: [] },
+      { id: 2, name: 'Tenis Adidas', price: 2200, variants: [] }
+    ];
+    jest.spyOn(Product, 'findAll').mockResolvedValue(mockProductsList);
 
-    productsController.create(req, res);
+    const res = await request(app)
+      .get('/api/products')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    req.body = {
-      name: "Tenis Adidas",
-      price: 2200
-    };
-
-    productsController.create(req, res);
-
-    // Ejecutamos list()
-    productsController.list(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Lista de productos",
-      data: [
-        {
-          id: 1,
-          name: "Tenis Nike Air",
-          price: 2500
-        },
-        {
-          id: 2,
-          name: "Tenis Adidas",
-          price: 2200
-        }
-      ]
-    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toBeDefined();
   });
 
-  test.skip('obtener un producto por id', () => {
-    req.body = {
-      name: "Tenis Nike Air",
-      price: 2500
-    };
+  test('GET /api/products/:id debe retornar un producto por su PK (200)', async () => {
+    const mockProduct = { id: 1, name: 'Tenis Nike Air', price: 2500 };
+    jest.spyOn(Product, 'findByPk').mockResolvedValue(mockProduct);
 
-    productsController.create(req, res);
+    const res = await request(app)
+      .get('/api/products/1')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    req.params = { id: "1" };
-
-    // llamamos al get de products, o sea nuestra funcion find
-    productsController.find(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Product by id",
-      data: {
-        id: 1,
-        name: "Tenis Nike Air",
-        price: 2500
-      }
-    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data.id).toBe(1);
   });
 
-  test.skip('actualizar un producto', () => {
-    req.body = {
-      name: "Tenis Nike Air",
-      price: 2500
-    };
+  test('GET /api/products/:id debe retornar 404 si el producto no existe', async () => {
+    jest.spyOn(Product, 'findByPk').mockResolvedValue(null);
 
-    productsController.create(req, res);
+    const res = await request(app)
+      .get('/api/products/999')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
-    req.params = { id: "1" };
-
-    req.body = {
-      name: "Tenis Nike Air Max Plus"
-    };
-
-    // llamamos a nuestra funcion update y le pasamos el request simulado
-    productsController.update(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "producto actualizado",
-      data: {
-        id: 1,
-        name: "Tenis Nike Air Max Plus",
-        price: 2500
-      }
-    });
+    expect(res.statusCode).toBe(404);
   });
 
-  test.skip('eliminar un producto', () => {
-    req.body = {
-      name: "Tenis Nike Air",
-      price: 2500
+  test('PUT /api/products/:id debe actualizar un producto existente (200)', async () => {
+    const mockProductInstance = {
+      id: 1,
+      name: 'Tenis Nike Air',
+      price: 2500,
+      update: jest.fn().mockResolvedValue({ id: 1, name: 'Tenis Nike Air Max Plus', price: 2500 })
     };
+    jest.spyOn(Product, 'findByPk').mockResolvedValue(mockProductInstance);
 
-    productsController.create(req, res);
+    const res = await request(app)
+      .put('/api/products/1')
+      .set('Authorization', `Bearer ${mockAdminToken}`)
+      .send({ name: 'Tenis Nike Air Max Plus' });
 
-    req.params = { id: "1" };
+    expect(res.statusCode).toBe(200);
+  });
 
-    // igual llamamos a nuestra funcion delete y le pasamos nuestro request que simulamos
-    productsController.destroy(req, res);
+  test('DELETE /api/products/:id debe eliminar un producto (200)', async () => {
+    const mockProductInstance = {
+      id: 1,
+      name: 'Tenis Nike Air',
+      destroy: jest.fn().mockResolvedValue(true)
+    };
+    jest.spyOn(Product, 'findByPk').mockResolvedValue(mockProductInstance);
 
-    expect(res.json).toHaveBeenCalledWith({
-      message: "producto eliminado",
-      data: {
-        id: 1,
-        name: "Tenis Nike Air",
-        price: 2500
-      }
-    });
+    const res = await request(app)
+      .delete('/api/products/1')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
+
+    expect(res.statusCode).toBe(200);
   });
 });
