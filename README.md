@@ -183,6 +183,32 @@ stride-co/
     15 minutos, quiere decir que hay 15 minutos disponibles desde que se hace un login para hacer peticiones o consultas en la API, una vez finalizan los 15 minutos cualquier intento dará como respuesta un mensaje de token expirado.
 
 
+## Internacionalización
+
+- La internacionalización se lleva a cabo mediante la librería i18N.
+  
+- Actualmente la internacionalización de la app web cuenta con 2 idiomas, inglés y español (en y es), siendo inglés el idioma por defecto.
+  
+- Para elegir el idioma a usar se deberán cambiar las cookies de idioma (lang), el método para hacerlo varía dependiendo de donde se esté usandola app:
+    
+    - Postman (agregar la cookie lang): Primero hay que añadir la cookie haciendo click en el botón "cookies" justo debajo del botón "send", en el menú que se despliega hay que hacer click en "add  new cookie" y reemplazar ```Cookie_1=value;``` por ```lang=en;``` o ```lang=es```, la cookie se guardará automáticamente.
+      
+    - Postman (Seleccionar idioma): Para cambiar de idioma modifica la cookie lang haciendo click al botón "cookies" y click a la cookie l"lang" que creamos anteriormente, aquí cambia el idioma de lang por el deseado, por ejemplo, para cambiar de inglés a español hay que cambiar ```lang=en;``` a ```lang=es```.
+      
+    - Navegador: Para cambiar de idioma en navegador hay que escribir ```?lang=<tu idioma como en o es>``` al final de la liga sin espacios, si no se escribe esta extensión la app se mostrará en inglés por ser el idioma por defecto.
+
+Cabe notar que no existe soporte para variaciones regionales de los idiomas, así que si en la cookie se escribe algo como lang=es-MX la app mostrará la versión básica del idioma que si es soportada.
+
+- Para agregar un nuevo idioma se deben de seguir una serie de pasos:
+    
+    - En config/i18n.js en la parte "locales" añadir letras representativas del idioma que se desee, por ejemplo "fr" para francés o "po" para portugués, estas letras servirán para saber el archivo json al cual la cookie deberá dirigirse, también se deberá actualizar el fallback agregando el nuevo idioma por ejemplo, escribir ```'po-*': 'po'``` para detectar cuando se escriba una variación del portugués como "po-BR" y redirigirlo al idioma básico.
+      
+    - Ahora hay que crear un nuevo archivo json en la carpeta "locales" utilizando las letras elegidas para representar nuestro idioma como nombre, siguiendo nuestro ejemplo el nombre del archivo sería "po.json".
+      
+    - Dentro del archivo json es donde se encuentran los textos traducidos y desde donde se cargan al resto del código, lo más simple sería copiar el contenido de uno de los archivos json ya existentes dentro de locales y solo reescribir los textos usando el idioma deseado, los textos se estructuran por grupos, los cuales contienen variables que representan los textos traducidos, el nombre de la variable es el texto entre " de la izquierda de los dos puntos y el texto traducido es el de la parte derecha, lo que se debe reescribir es el texto de la parte derecha de los dos puntos, una vez hecho esto solo hay que guardar el documento y los textos se cargarán cuando se cambie la cookie.
+      
+    - Para añadir nuevo texto hay que añadirlo primero a los archivos json en locales, ya sea añadiendo una nueva variable de texto a algún grupo o creando un nuevo grupo con nuevas variables de texto, y traducirlo al idioma respectivo de cada archivo, hay que procurar que todos los archivos json queden parejos (es decir con las mismas variables), luego hay que llamar al texto en donde se necesite colocando esta estructura ```req.__('<Nombre del grupo del texto>.<Nombre de la variable del texto>')``` en donde se devuelva un json, después del message. 
+
 ## Instalación desde cero
 
 ### Requisitos
