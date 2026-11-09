@@ -209,6 +209,58 @@ Cabe notar que no existe soporte para variaciones regionales de los idiomas, as�
       
     - Para añadir nuevo texto hay que añadirlo primero a los archivos json en locales, ya sea añadiendo una nueva variable de texto a algún grupo o creando un nuevo grupo con nuevas variables de texto, y traducirlo al idioma respectivo de cada archivo, hay que procurar que todos los archivos json queden parejos (es decir con las mismas variables), luego hay que llamar al texto en donde se necesite colocando esta estructura ```req.__('<Nombre del grupo del texto>.<Nombre de la variable del texto>')``` en donde se devuelva un json, después del message. 
 
+## Configuracion y Secretos
+### Config - Cargado de variables de entorno
+Para utilizar la aplicacion y hacer su despliegue se hacen uso de secretos y variables de entorno mediante la libreria ```config```.
+La configuracion de variables de entorno pasa de ser en archivo ```.env``` multiples archivos que configuran cada entorno de ejecución, ```production```, ```development``` y ```test```.
+Estructura de archivos
+```
+stride-co/
+├── bin/
+├── config/
+│   ├──custom-environment-variables.json
+│   ├──default.json
+│   ├──local-development-example.json
+│   ├──local-development.json
+│   ├──local-production.json
+│   ├──production.json
+│   ├──test.json
+... └── ...
+```
+Cada archivo proporciona diferentes variables y permite la separacion de responsabilidades, descentralizando los valores con los que se trabajan.
+### Secuencia de registro/mapeo de variables
+La manera ne la que trabaja config es que lee el archivo con menor prioridad y guarda sus datos, una vez hecho lee el siguente archivo que dependera de nuestra variable de ejecucion (```NODE_ENV=production||development||test```), los valores mapeados (entendiendo mapeado como declarados en el archivo ```.JSON```) se sobreescribiran en el archivo final.
+#### Orden de ejecucion (```NODE_ENV=development```)
+```default.json``` -> ```development.json``` -> ```local-development.json``` -> ```custom-environment-variables.json```.
+
+Esto se aplica en cada entorno: 
+
+```default.json``` -> ```production.json``` -> ```local-production.json``` -> ```custom-environment-variables.json```.
+
+```default.json``` -> ```test.json``` -> ```custom-environment-variables.json```.
+
+De esta manera podemos tener diferentes conexiones, nombres de bases de datos y ejecuciones en un solo proyecto sin necesidad de declarar muchisimas variables de entorno en un ```.env``` y cargarlo segun una de ellas.
+
+### Secretos - Render
+Los archivos secretos contienen informacion que nadie deberia conocer, se agrega al ```.gitignore``` para evitar la filtracion igual en el ```.dockerignore``` para no filtrar informacion sensible en la imagen generada.
+
+La forma de cargar secretos en Render es accediendo al Dashboard de nuestro deploy e ingresar a la seccion "Environment" (Entorno). Dentro encontraremos dos cuadrados los cuales son las secciones de "Environment Variables" y "Secrets Files".
+#### Environment Variables
+Al presionar el boton de "Edit" podremos agregar las variables de entorno que ocupemos para poner en produccion nuestra aplicación.
+[![0eZD75at9X](https://yourimageshare.com/ib/0eZD75at9X.png)](https://yourimageshare.com/ib/0eZD75at9X)
+Una vez agregadas nuestras variables de entorno podremos guardarlas y re-desplegar nuestra aplicación con la nueva configuración.
+
+Redner terminara ejecutando ```NODE_ENV=<value> PORT=<value> npm start```.
+#### Secretos
+Con los secretos, exactamente el mismo procedimiento pero ahora en la seccion de "Secret Files", en el botón "Edit" nos permitira agregar archivos, pero no subirlo si no que hay que especificar su nombre, extension y despues pegar el contenido dentro. En ningun momento se deben subir archivos de manera automatica.
+[![N2tsMTRBAP](https://yourimageshare.com/ib/N2tsMTRBAP.png)](https://yourimageshare.com/ib/N2tsMTRBAP)
+De la misma manera, guardar y re-desplegar la aplicación.
+#### Uso de secretos
+Por defecto, Render subira nuestros secretos a ```/etc/secrets/<filename>```, no podremos elegir donde ubicarlos, y como vimos, config ocupa que el archivo local-production.json detro de su propia carpeta, por lo que tendremos que especificar en el ```Dockerfile``` un comando para copiar el archivo en el arranque de la aplicación.
+```shell
+CMD ["sh", "-c", "cp /etc/secrets/local-production.json config/local-production.json && exec npm start"]
+```
+Podremos ver como hacemos copiado manualmente del archivo de la ruta predeterminada a nuestro directorio especificado, con esto la aplicación ya se encuentra lista para el despliegue.
 ## Instalación desde cero
 
 ### Requisitos
