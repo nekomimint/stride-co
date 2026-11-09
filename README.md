@@ -65,11 +65,12 @@ Para iniciar el servidor en entorno de produccion:
 
 | Comando | Descripción |
 |---|---|
-| `npm run dev`  | incia el servidor en modo de desarrollo |
-| `npm start`    | incia el servidor en modo de produccion |
-| `npm test`     | Ejecuta el set de pruebas unitarias     |
-| `npm run lint` | Analiza todo el proyecto desde la raiz  |
-| `ctrl + c`     | Detiene el servidor una vez iniciado    |
+| `npm run dev`     | incia el servidor en modo de desarrollo |
+| `npm start`       | incia el servidor en modo de produccion |
+| `npm test`        | Ejecuta la suite de pruebas unitarias     |
+| `npm run test:e2e`| Ejecuta la suite de pruebas End-to-End (E2E) con bases de datos reales|
+| `npm run lint`    | Analiza todo el proyecto desde la raiz  |
+| `ctrl + c`        | Detiene el servidor una vez iniciado    |
 
 ## Endpoints de la API
 
@@ -103,9 +104,25 @@ Los siguientes recursos forman parte de la arquitectura inicial y responden con 
 *Eliminar registro (DELETE /api/<recurso>/:id)*: Elimina el registro por su identificador.
 
 ## Pruebas
-El proyecto cuenta con pruebas automatizadas integradas para validar el comportamiento de los controladores y endpoints de la API.
-Para correr las pruebas ejecute:
+El proyecto cuenta con una suite automatizada construida sobre Jest y Supertest para garantizar el correcto funcionamiento de los controladores, middlewares y reglas de negocio de la API REST. Las pruebas están divididas en dos modalidades:
+
+- Pruebas Unitarias y de Integración con Mocks (npm test)
+
+Evalúan la lógica del sistema aislando las bases de datos externas (PostgreSQL en Render y MongoDB Atlas) mediante la simulación (mocking) de Sequelize, Mongoose y el middleware de control de acceso RBAC (AccessControl).
+Para ejecutar el set de pruebas unitarias:
 *npm test*
+
+- Pruebas End-to-End (npm run test:e2e)
+
+Validan el flujo real de la aplicación conectándose a la infraestructura remota de PostgreSQL y MongoDB Atlas.
+Para ejecutar las pruebas E2E:
+*npm run test:e2e*
+
+- Evidencia de ejecución de las pruebas 2e2:
+<img width="456" height="150" alt="image" src="https://github.com/user-attachments/assets/dd3f2c1b-1ace-4719-b624-2063ec77e71c" />
+
+Para consultar la bitácora de desarrollo y el registro técnico de la sesión, revisa la [Documentación de Antigravity](./docs/antigravity.md).
+
 
 ## Análisis de calidad de código
 El análisis de calidad y formateo de código se realiza con ESLint para asegurar el cumplimiento de buenas prácticas.
