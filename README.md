@@ -9,7 +9,7 @@
 | **Carrera** | Ingeniería en Computación |
 | **Materia** | Desarrollo De Aplicaciones Web |
 | **Docente** | Ramírez Martínez Luis Antonio |
-| **Actividad** | Proyecto Integrador - Stide-co |
+| **Actividad** | Proyecto Integrador - Stride-co |
 | **Equipo** | Equipo N° 4 |
 | **Integrantes** | • Jesús Manuel Villegas Terrazas (385743)<br>• Alan Fabricio Vega Gutiérrez (385658)<br>• Edgar Klassen Saenz (385429)<br>• Amir Ovedi Mendiaz Rodriguez (385686) |
 | **Fecha de entrega** | 20/09/2026 |
