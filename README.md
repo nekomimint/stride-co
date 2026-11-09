@@ -166,6 +166,48 @@ stride-co/
 
     15 minutos, quiere decir que hay 15 minutos disponibles desde que se hace un login para hacer peticiones o consultas en la API, una vez finalizan los 15 minutos cualquier intento dará como respuesta un mensaje de token expirado.
 
+### Endpoints y permisos RBAC
+
+| Método | Endpoint | Permiso RBAC requerido | Descripción |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/products` | `products:read:any` | Lista todos los productos |
+| **GET** | `/products/:id` | `products:read:any` | Obtiene un producto por id |
+| **POST** | `/products` | `products:create:any` | Crea un producto |
+| **PUT** | `/products/:id` | `products:update:any` | Edita un producto |
+| **DELETE** | `/products/:id` | `products:delete:any` | Elimina un producto |
+| **GET** | `/variants` | `variants:read:any` | Lista las variantes |
+| **GET** | `/variants/:id` | `variants:read:any` | Obtiene una variante por id |
+| **POST** | `/variants` | `variants:create:any` | Crea una variante |
+| **PUT** | `/variants/:id` | `variants:update:any` | Edita una variante |
+| **DELETE** | `/variants/:id` | `variants:delete:any` | Elimina una variante |
+| **GET** | `/inventory` | `inventory:read:any` | Lista el inventario |
+| **GET** | `/inventory/:id` | `inventory:read:any` | Obtiene un registro de inventario |
+| **POST** | `/inventory` | `inventory:create:any` | Crea un registro de inventario |
+| **PUT** | `/inventory/:id` | `inventory:update:any` | Edita un registro de inventario |
+| **DELETE** | `/inventory/:id` | `inventory:delete:any` | Elimina un registro de inventario |
+| **GET** | `/orders` | `orders:read:any` | Lista todas las órdenes |
+| **GET** | `/orders/:id` | `orders:read:own` | Obtiene una orden por id (propia) |
+| **POST** | `/orders` | `orders:create:own` / `orders:create:any` | Crea una orden propia (`user`) o para cualquier cliente (`sales`, `admin`) |
+| **PUT** | `/orders/:id` | `orders:update:own` | Edita una orden propia |
+| **GET** | `/customers` | `customers:read:any` | Lista todos los clientes |
+| **GET** | `/customers/:id` | `customers:read:own` | Obtiene un cliente por id (propio) |
+| **POST** | `/customers` | `customers:create:any` | Crea un cliente |
+| **PUT** | `/customers/:id` | `customers:update:any` / `customers:update:own` | Edita cualquier cliente (`sales`, `admin`) o el propio (`user`) |
+| **DELETE** | `/customers/:id` | `customers:delete:any` | Elimina un cliente |
+| **GET** | `/users` | `users:read:any` | Lista todos los usuarios |
+| **GET** | `/users/:id` | `users:read:own` | Obtiene un perfil (propio) |
+| **POST** | `/users` | `users:create:any` | Crea un usuario |
+| **PUT** | `/users/:id` | `users:update:any` / `users:update:own` | Edita cualquier usuario (`admin`) o el perfil propio |
+| **DELETE** | `/users/:id` | `users:delete:any` | Elimina un usuario |
+| **GET** | `/roles` | `roles:read:any` | Lista los roles |
+| **POST** | `/roles` | `roles:manage:any` | Crea un rol |
+| **PUT** | `/roles/:id` | `roles:manage:any` | Edita un rol |
+| **DELETE** | `/roles/:id` | `roles:manage:any` | Elimina un rol |
+| **POST** | `/roles/assign` | `roles:assign:any` | Asigna un rol a un usuario |
+| **GET** | `/permissions` | `permissions:read:any` | Lista los permisos |
+| **POST** | `/permissions` | `permissions:manage:any` | Crea un permiso |
+| **PUT** | `/permissions/:id` | `permissions:manage:any` | Edita un permiso |
+| **DELETE** | `/permissions/:id` | `permissions:manage:any` | Elimina un permiso |
 
 ## Control de acceso basado en roles
 
