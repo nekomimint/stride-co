@@ -103,31 +103,6 @@ Los siguientes recursos forman parte de la arquitectura inicial y responden con 
 
 *Eliminar registro (DELETE /api/<recurso>/:id)*: Elimina el registro por su identificador.
 
-## Pruebas
-El proyecto cuenta con una suite automatizada construida sobre Jest y Supertest para garantizar el correcto funcionamiento de los controladores, middlewares y reglas de negocio de la API REST. Las pruebas están divididas en dos modalidades:
-
-- Pruebas Unitarias y de Integración con Mocks (npm test)
-
-Evalúan la lógica del sistema aislando las bases de datos externas (PostgreSQL en Render y MongoDB Atlas) mediante la simulación (mocking) de Sequelize, Mongoose y el middleware de control de acceso RBAC (AccessControl).
-Para ejecutar el set de pruebas unitarias:
-*npm test*
-
-- Pruebas End-to-End (npm run test:e2e)
-
-Validan el flujo real de la aplicación conectándose a la infraestructura remota de PostgreSQL y MongoDB Atlas.
-Para ejecutar las pruebas E2E:
-*npm run test:e2e*
-
-- Evidencia de ejecución de las pruebas 2e2:
-<img width="456" height="150" alt="image" src="https://github.com/user-attachments/assets/dd3f2c1b-1ace-4719-b624-2063ec77e71c" />
-
-**Bitácora y documentación de la sesión:** [docs/e2e-antigravity.md](./docs/e2e-antigravity.md)
-
-## Análisis de calidad de código
-El análisis de calidad y formateo de código se realiza con ESLint para asegurar el cumplimiento de buenas prácticas.
-Para ejecutar la revisión estática ejecuta:
-*npm run lint*
-
 
 ## Estructura general del proyecto
 
@@ -181,33 +156,6 @@ stride-co/
 - Tiempo de expiracion configurado.
 
     15 minutos, quiere decir que hay 15 minutos disponibles desde que se hace un login para hacer peticiones o consultas en la API, una vez finalizan los 15 minutos cualquier intento dará como respuesta un mensaje de token expirado.
-
-
-## Internacionalización
-
-- La internacionalización se lleva a cabo mediante la librería i18N.
-  
-- Actualmente la internacionalización de la app web cuenta con 2 idiomas, inglés y español (en y es), siendo inglés el idioma por defecto.
-  
-- Para elegir el idioma a usar se deberán cambiar las cookies de idioma (lang), el método para hacerlo varía dependiendo de donde se esté usandola app:
-    
-    - Postman (agregar la cookie lang): Primero hay que añadir la cookie haciendo click en el botón "cookies" justo debajo del botón "send", en el menú que se despliega hay que hacer click en "add  new cookie" y reemplazar ```Cookie_1=value;``` por ```lang=en;``` o ```lang=es```, la cookie se guardará automáticamente.
-      
-    - Postman (Seleccionar idioma): Para cambiar de idioma modifica la cookie lang haciendo click al botón "cookies" y click a la cookie l"lang" que creamos anteriormente, aquí cambia el idioma de lang por el deseado, por ejemplo, para cambiar de inglés a español hay que cambiar ```lang=en;``` a ```lang=es```.
-      
-    - Navegador: Para cambiar de idioma en navegador hay que escribir ```?lang=<tu idioma como en o es>``` al final de la liga sin espacios, si no se escribe esta extensión la app se mostrará en inglés por ser el idioma por defecto.
-
-Cabe notar que no existe soporte para variaciones regionales de los idiomas, así que si en la cookie se escribe algo como lang=es-MX la app mostrará la versión básica del idioma que si es soportada.
-
-- Para agregar un nuevo idioma se deben de seguir una serie de pasos:
-    
-    - En config/i18n.js en la parte "locales" añadir letras representativas del idioma que se desee, por ejemplo "fr" para francés o "po" para portugués, estas letras servirán para saber el archivo json al cual la cookie deberá dirigirse, también se deberá actualizar el fallback agregando el nuevo idioma por ejemplo, escribir ```'po-*': 'po'``` para detectar cuando se escriba una variación del portugués como "po-BR" y redirigirlo al idioma básico.
-      
-    - Ahora hay que crear un nuevo archivo json en la carpeta "locales" utilizando las letras elegidas para representar nuestro idioma como nombre, siguiendo nuestro ejemplo el nombre del archivo sería "po.json".
-      
-    - Dentro del archivo json es donde se encuentran los textos traducidos y desde donde se cargan al resto del código, lo más simple sería copiar el contenido de uno de los archivos json ya existentes dentro de locales y solo reescribir los textos usando el idioma deseado, los textos se estructuran por grupos, los cuales contienen variables que representan los textos traducidos, el nombre de la variable es el texto entre " de la izquierda de los dos puntos y el texto traducido es el de la parte derecha, lo que se debe reescribir es el texto de la parte derecha de los dos puntos, una vez hecho esto solo hay que guardar el documento y los textos se cargarán cuando se cambie la cookie.
-      
-    - Para añadir nuevo texto hay que añadirlo primero a los archivos json en locales, ya sea añadiendo una nueva variable de texto a algún grupo o creando un nuevo grupo con nuevas variables de texto, y traducirlo al idioma respectivo de cada archivo, hay que procurar que todos los archivos json queden parejos (es decir con las mismas variables), luego hay que llamar al texto en donde se necesite colocando esta estructura ```req.__('<Nombre del grupo del texto>.<Nombre de la variable del texto>')``` en donde se devuelva un json, después del message. 
 
 ## Instalación desde cero
 
@@ -477,13 +425,66 @@ router.get('/:id', authorize('orders', 'read', 'own'), log('Searching order by i
 
 Con el archivo `seed.js` se realizan las inserciones a las tres tablas de nuestra base de datos: `roles`, `permissions` y `role_permissions`. Dentro de estas tablas hemos definido quién puede hacer qué (34 permisos en total, asignados a los roles `admin`, `sales` y `user` según la matriz RBAC). Luego, cuando el cliente hace una petición a una ruta protegida, es el middleware `authorize` el que se encarga de verificar quién está ejecutando la acción (lo sabe gracias al JWT y a `req.auth`), consulta la configuración de permisos y confirmar que tenga asignado dicho permiso.
 
+## Internacionalización
+
+- La internacionalización se lleva a cabo mediante la librería i18N.
+  
+- Actualmente la internacionalización de la app web cuenta con 2 idiomas, inglés y español (en y es), siendo inglés el idioma por defecto.
+  
+- Para elegir el idioma a usar se deberán cambiar las cookies de idioma (lang), el método para hacerlo varía dependiendo de donde se esté usandola app:
+    
+    - Postman (agregar la cookie lang): Primero hay que añadir la cookie haciendo click en el botón "cookies" justo debajo del botón "send", en el menú que se despliega hay que hacer click en "add  new cookie" y reemplazar ```Cookie_1=value;``` por ```lang=en;``` o ```lang=es```, la cookie se guardará automáticamente.
+      
+    - Postman (Seleccionar idioma): Para cambiar de idioma modifica la cookie lang haciendo click al botón "cookies" y click a la cookie l"lang" que creamos anteriormente, aquí cambia el idioma de lang por el deseado, por ejemplo, para cambiar de inglés a español hay que cambiar ```lang=en;``` a ```lang=es```.
+      
+    - Navegador: Para cambiar de idioma en navegador hay que escribir ```?lang=<tu idioma como en o es>``` al final de la liga sin espacios, si no se escribe esta extensión la app se mostrará en inglés por ser el idioma por defecto.
+
+Cabe notar que no existe soporte para variaciones regionales de los idiomas, así que si en la cookie se escribe algo como lang=es-MX la app mostrará la versión básica del idioma que si es soportada.
+
+- Para agregar un nuevo idioma se deben de seguir una serie de pasos:
+    
+    - En config/i18n.js en la parte "locales" añadir letras representativas del idioma que se desee, por ejemplo "fr" para francés o "po" para portugués, estas letras servirán para saber el archivo json al cual la cookie deberá dirigirse, también se deberá actualizar el fallback agregando el nuevo idioma por ejemplo, escribir ```'po-*': 'po'``` para detectar cuando se escriba una variación del portugués como "po-BR" y redirigirlo al idioma básico.
+      
+    - Ahora hay que crear un nuevo archivo json en la carpeta "locales" utilizando las letras elegidas para representar nuestro idioma como nombre, siguiendo nuestro ejemplo el nombre del archivo sería "po.json".
+      
+    - Dentro del archivo json es donde se encuentran los textos traducidos y desde donde se cargan al resto del código, lo más simple sería copiar el contenido de uno de los archivos json ya existentes dentro de locales y solo reescribir los textos usando el idioma deseado, los textos se estructuran por grupos, los cuales contienen variables que representan los textos traducidos, el nombre de la variable es el texto entre " de la izquierda de los dos puntos y el texto traducido es el de la parte derecha, lo que se debe reescribir es el texto de la parte derecha de los dos puntos, una vez hecho esto solo hay que guardar el documento y los textos se cargarán cuando se cambie la cookie.
+      
+    - Para añadir nuevo texto hay que añadirlo primero a los archivos json en locales, ya sea añadiendo una nueva variable de texto a algún grupo o creando un nuevo grupo con nuevas variables de texto, y traducirlo al idioma respectivo de cada archivo, hay que procurar que todos los archivos json queden parejos (es decir con las mismas variables), luego hay que llamar al texto en donde se necesite colocando esta estructura ```req.__('<Nombre del grupo del texto>.<Nombre de la variable del texto>')``` en donde se devuelva un json, después del message. 
+
+
+## Pruebas
+El proyecto cuenta con una suite automatizada construida sobre Jest y Supertest para garantizar el correcto funcionamiento de los controladores, middlewares y reglas de negocio de la API REST. Las pruebas están divididas en dos modalidades:
+
+- Pruebas Unitarias y de Integración con Mocks (npm test)
+
+Evalúan la lógica del sistema aislando las bases de datos externas (PostgreSQL en Render y MongoDB Atlas) mediante la simulación (mocking) de Sequelize, Mongoose y el middleware de control de acceso RBAC (AccessControl).
+Para ejecutar el set de pruebas unitarias:
+*npm test*
+
+- Pruebas End-to-End (npm run test:e2e)
+
+Validan el flujo real de la aplicación conectándose a la infraestructura remota de PostgreSQL y MongoDB Atlas.
+Para ejecutar las pruebas E2E:
+*npm run test:e2e*
+
+- Evidencia de ejecución de las pruebas 2e2:
+<img width="456" height="150" alt="image" src="https://github.com/user-attachments/assets/dd3f2c1b-1ace-4719-b624-2063ec77e71c" />
+
+**Bitácora y documentación de la sesión:** [docs/e2e-antigravity.md](./docs/e2e-antigravity.md)
+
+## Análisis de calidad de código
+El análisis de calidad y formateo de código se realiza con ESLint para asegurar el cumplimiento de buenas prácticas.
+Para ejecutar la revisión estática ejecuta:
+*npm run lint*
+
+## Configuración y secretos (pendiente)
 
 
 ## API PÚBLICA
 ### Url Pública 
 https://stride-co-drfc.onrender.com/
 ### Health check (pendiente)
-aqui va la url del health check ? o a que se refiere con GET /Health?
+<img width="1014" height="277" alt="image" src="https://github.com/user-attachments/assets/debf30ba-0db5-4af7-a3f7-4eae8f0e70a1" />
 
 ### Usuarios de demostración
 Creados por `npm run seed`. Las contraseñas son exclusivas de estas cuentas
