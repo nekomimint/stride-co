@@ -166,6 +166,97 @@ stride-co/
 
     15 minutos, quiere decir que hay 15 minutos disponibles desde que se hace un login para hacer peticiones o consultas en la API, una vez finalizan los 15 minutos cualquier intento dará como respuesta un mensaje de token expirado.
 
+
+## Instalación desde cero
+
+### Requisitos
+- Node.js 
+- PostgreSQL
+- MongoDB local **o** acceso a un cluster de Atlas
+- Git
+
+### Pasos
+
+1. Clona el repositorio e ingresa a la carpeta:
+
+```bash
+git clone https://github.com/nekomimint/stride-co.git
+cd stride-co
+```
+
+2. Instala las dependencias:
+
+```bash
+npm install
+```
+
+3. Crea el archivo de configuración a partir de la plantilla:
+
+```bash
+cp config/local-development.example.json config/local-development.json
+```
+
+
+4. Edita `config/local-development.json` con tus valores:
+
+```json
+{
+    "postgres":
+    {
+        "host": "your_provider",
+        "port": "5432_or_your_port",
+        "user": "user_to_access",
+        "password": "password_to_access"
+    },
+    "mongodb": {
+        "url": "your_provider_url",
+        "user": "user_to_access",
+        "password": "password_to_access",
+        "protocol": "atlas_uses_mongodb+srv://_chech_the_url_of_your_provider"
+    },
+    "auth": {
+        "jwtSecret": "your_very_secret_key",
+        "saltRounds": 10,
+        "jwtExpires": "your_time_like_30m_or_1h",
+        "jwtIssuer": "your_issuer",
+        "jwtAudience": "your_audience"
+    }
+}
+```
+
+5. Crea la base de datos en PostgreSQL
+
+```bash
+createdb stride-co
+```
+
+6. Carga los datos iniciales con `npm run seed` (ver sección *Poblar las bases de datos*).
+
+7. Inicia el servidor:
+
+```bash
+npm run dev
+```
+
+### Bases de datos en desarrollo
+
+El proyecto usa dos bases de datos:
+
+| Base de datos | Uso |
+| :--- | :--- |
+| **PostgreSQL** | Usuarios, roles, permisos (`roles`, `permissions`, `role_permissions`), productos, variantes e inventario |
+| **MongoDB** | Órdenes y clientes |
+
+### Poblar las bases de datos (seed)
+Antes de ejecutar el seed, verifica que:
+1. PostgreSQL y MongoDB (local o Atlas) estén en ejecución.
+2. Exista `config/local-development.json` con las credenciales correctas.
+
+Ejecuta:
+
+```bash
+npm run seed
+```
 ### Endpoints y permisos RBAC
 
 | Método | Endpoint | Permiso RBAC requerido | Descripción |
@@ -347,9 +438,9 @@ Con el archivo `seed.js` se realizan las inserciones a las tres tablas de nuestr
 
 
 ## API PÚBLICA
-### URL PUBLICA 
+### Url Pública 
 https://stride-co-drfc.onrender.com/
-### HEALTH CHECK
+### Health check (pendiente)
 aqui va la url del health check ? o a que se refiere con GET /Health?
 
 ### Usuarios de demostración
@@ -362,7 +453,7 @@ y no se reutilizan en ningún otro lugar.
 | sales | Dany Martinez  | dany@gmail.com  | sales123   |
 | user  | Sofia Rivero   | sofia@gmail.com | usuario123 |
 
-### Ejemplo de uso
+### Ejemplo de uso (pendiente)
 
 ### Render PostgresSQL (pendiende)
 Fecha de creación: 
