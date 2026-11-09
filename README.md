@@ -483,7 +483,7 @@ Para ejecutar la revisión estática ejecuta:
 ## API PÚBLICA
 ### Url Pública 
 https://stride-co-drfc.onrender.com/
-### Health check (pendiente)
+### Health check
 <img width="1014" height="277" alt="image" src="https://github.com/user-attachments/assets/debf30ba-0db5-4af7-a3f7-4eae8f0e70a1" />
 
 ### Usuarios de demostración
