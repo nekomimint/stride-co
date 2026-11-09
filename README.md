@@ -121,8 +121,7 @@ Para ejecutar las pruebas E2E:
 - Evidencia de ejecución de las pruebas 2e2:
 <img width="456" height="150" alt="image" src="https://github.com/user-attachments/assets/dd3f2c1b-1ace-4719-b624-2063ec77e71c" />
 
-Para consultar la bitácora de desarrollo y el registro técnico de la sesión, revisa la [Documentación de Antigravity](./docs/antigravity.md).
-
+**Bitácora y documentación de la sesión:** [docs/e2e-antigravity.md](./docs/e2e-antigravity.md)
 
 ## Análisis de calidad de código
 El análisis de calidad y formateo de código se realiza con ESLint para asegurar el cumplimiento de buenas prácticas.
