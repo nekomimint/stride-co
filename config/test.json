@@ -6,14 +6,15 @@
         "host": "localhost",
         "port": 5432,
         "database": "stride_test",
-        "user": "changue_your_instance",
-        "password": "changue_your_instance"
+        "user": "your user",
+        "password": "your password"
     },
     "mongodb": {
+        "protocol": "mongodb://",
         "url": "localhost:27017",
-        "user": "changue_your_instance",
-        "password": "changue_your_instance",
-        "database": "stride_test"
+        "user": "your user",
+        "password": "your password",
+        "database": "your database"
     },
     "auth": {
         "jwtSecret": "test-only-secret",

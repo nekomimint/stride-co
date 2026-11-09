@@ -10,6 +10,13 @@
     "lint": "eslint .",
     "seed": "NODE_ENV=development node seed.js"
   },
+  "jest": {
+    "testMatch": [
+      "**/__tests__/**/*.[jt]s?(x)",
+      "**/?(*.)+(spec|test).[jt]s?(x)",
+      "**/tests/e2e/rbac.js"
+    ]
+  },
   "dependencies": {
     "accesscontrol": "^2.2.1",
     "bcrypt": "^6.0.0",
