@@ -552,14 +552,38 @@ y no se reutilizan en ningún otro lugar.
 ### Ejemplo de uso (pendiente)
 
 ### Render PostgresSQL (pendiende)
-Fecha de creación: 
+Fecha de creación: 2 de Noviembre de 2026 (02/11/2026)
 
 ### MongoDB Atlas (pendiente)
-provedor y region del cluster, como se configuro Network Access
-
+Proovedor: MongoDB
+Región del cluster: AWS / Oregon (us-west-2)
+Networks Access: Se configuro que se pueda consultar la base de datos desde todas las IP, agregando la dirección 0.0.0.0.
 ### Secretos (pendiente)
-como se entrega config/local-production.json a Render (sin valores reales)
-
+local-production.json
+```shell
+{
+    "postgres":
+    {
+        "host": "",
+        "port": "",
+        "user": "",
+        "password": ""
+    },
+    "mongodb": {
+        "url": "",
+        "user": "",
+        "password": "",
+        "protocol": ""
+    },
+    "auth": {
+        "jwtSecret": "",
+        "saltRounds": Number,
+        "jwtExpires": "",
+        "jwtIssuer": "",
+        "jwtAudience": ""
+    }
+}
+```
 
 ## Autores
 
