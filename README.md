@@ -521,7 +521,7 @@ Para ejecutar las pruebas E2E:
 *npm run test:e2e*
 
 - Evidencia de ejecución de las pruebas 2e2:
-<img width="456" height="150" alt="image" src="https://github.com/user-attachments/assets/dd3f2c1b-1ace-4719-b624-2063ec77e71c" />
+<img width="648" height="171" alt="image" src="https://github.com/user-attachments/assets/ecbc3ce4-81b6-4d5e-a58c-ce83cf5d81e2" />
 
 **Bitácora y documentación de la sesión:** [docs/e2e-antigravity.md](./docs/e2e-antigravity.md)
 
