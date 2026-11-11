@@ -530,9 +530,6 @@ El análisis de calidad y formateo de código se realiza con ESLint para asegura
 Para ejecutar la revisión estática ejecuta:
 *npm run lint*
 
-## Configuración y secretos (pendiente)
-
-
 ## API PÚBLICA
 ### Url Pública 
 https://stride-co-drfc.onrender.com/
@@ -549,16 +546,27 @@ y no se reutilizan en ningún otro lugar.
 | sales | Dany Martinez  | dany@gmail.com  | sales123   |
 | user  | Sofia Rivero   | sofia@gmail.com | usuario123 |
 
-### Ejemplo de uso (pendiente)
+### Ejemplo de uso
+#### consultar un recurso:
+Primero tenemos que iniciar sesión. Al iniciar sesión recibiremos el token con el 
+cual podemos autenticarnos.
+<img width="1016" height="536" alt="imagen" src="https://github.com/user-attachments/assets/81fd59d7-183b-453f-945d-10acd4fa37cc" />
+#### Acceder a un recurso
+Con el Bearer Token obtenido podemos ingresar a un recurso (mientras los permisos de nuestro rol lo permitan)
+<img width="1016" height="573" alt="imagen" src="https://github.com/user-attachments/assets/fe54da32-f94d-41c2-981a-c9c4fa279fb5" />
+### Cambiar idioma
+También podemos cambiar el idioma de las respuestas de nuestra api. Para hacerlo podemos, por ejemplo, pasarle 
+el idioma como parámetro dentro de la propia url 
+<img width="1003" height="358" alt="imagen" src="https://github.com/user-attachments/assets/1130e8c2-4eb0-4f2a-b6ff-5afdecfcc8eb" />
 
-### Render PostgresSQL (pendiende)
+### Render PostgresSQL 
 Fecha de creación: 2 de Noviembre de 2026 (02/11/2026)
 
-### MongoDB Atlas (pendiente)
+### MongoDB Atlas 
 Proovedor: MongoDB
 Región del cluster: AWS / Oregon (us-west-2)
 Networks Access: Se configuro que se pueda consultar la base de datos desde todas las IP, agregando la dirección 0.0.0.0.
-### Secretos (pendiente)
+### Secretos
 local-production.json
 ```shell
 {
